@@ -1,22 +1,20 @@
-import fs from "fs-extra";
-import Handlebars from "handlebars";
-import path from "path";
+import { TemplateCache } from "./template-cache.service";
+import { TemplateLoader } from "./template-loader.service";
+import { TemplateRenderer } from "./template-renderer.service";
 
 export class TemplateService {
+  private readonly loader = new TemplateLoader();
+  private readonly renderer = new TemplateRenderer();
+  private readonly cache = new TemplateCache();
 
-  render(template: string, data: Record<string, any>) {
+  async render(templateName: string, data: Record<string, unknown>): Promise<string> {
+    if (this.cache.has(templateName)) {
+      return this.renderer.render(this.cache.get(templateName)!, data);
+    }
 
-    const templatePath = path.join(
-      process.cwd(),
-      "src",
-      "templates",
-      `${template}.hbs`
-    );
+    const templateContent = await this.loader.load(templateName);
+    this.cache.set(templateName, templateContent);
 
-    const source = fs.readFileSync(templatePath, "utf8");
-
-    return Handlebars.compile(source)(data);
-
+    return this.renderer.render(templateContent, data);
   }
-
 }

@@ -13,10 +13,18 @@
 
     "skipLibCheck": true
   },
+
   "include": [
-    "src"
+    "src/**/*.ts"
+  ],
+
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.integration.test.ts",
+    "**/*.coverage.test.ts",
+    "src/smoke/**",
+    "coverage",
+    "dist",
+    "node_modules"
   ]
 }
-
-
-já esta ficando muito lento este chat

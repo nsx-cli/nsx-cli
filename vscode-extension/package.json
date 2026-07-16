@@ -1,0 +1,66 @@
+{
+  "name": "nsx-vscode-extension",
+  "displayName": "NSX CLI",
+  "description": "Official VS Code extension for the NSX CLI",
+  "version": "1.0.0",
+  "publisher": "nsx-platform",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "nsx.doctor", "title": "NSX: Doctor" },
+      { "command": "nsx.analyze", "title": "NSX: Analyze" },
+      { "command": "nsx.fix.dryRun", "title": "NSX: Fix (Preview)" },
+      { "command": "nsx.fix.apply", "title": "NSX: Fix (Apply)" },
+      { "command": "nsx.graph", "title": "NSX: Graph" },
+      { "command": "nsx.docs.generate", "title": "NSX: Generate Docs" },
+      { "command": "nsx.generate.module", "title": "NSX: Generate Module" },
+      { "command": "nsx.generate.module.fromFolder", "title": "NSX: Generate Module Here" },
+      { "command": "nsx.generate.test", "title": "NSX: Generate Test" },
+      { "command": "nsx.generate.test.fromFolder", "title": "NSX: Generate Test Here" },
+      { "command": "nsx.make.resource", "title": "NSX: Make Resource" },
+      { "command": "nsx.make.resource.fromFolder", "title": "NSX: Make Resource Here" },
+      { "command": "nsx.prisma.crud", "title": "NSX: Prisma CRUD" },
+      { "command": "nsx.prisma.crud.fromFolder", "title": "NSX: Prisma CRUD Here" },
+      { "command": "nsx.marketplace.templates.list", "title": "NSX: Marketplace Templates List" },
+      { "command": "nsx.marketplace.templates.install", "title": "NSX: Marketplace Templates Install" }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "nsx.generate.module.fromFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "1_nsx"
+        },
+        {
+          "command": "nsx.make.resource.fromFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "1_nsx"
+        },
+        {
+          "command": "nsx.generate.test.fromFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "1_nsx"
+        },
+        {
+          "command": "nsx.prisma.crud.fromFolder",
+          "when": "resourceExtname == .prisma",
+          "group": "1_nsx"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "NSX CLI",
+      "properties": {
+        "nsx.cliPath": {
+          "type": "string",
+          "default": "nsx",
+          "description": "CLI executable used by the NSX VS Code extension"
+        }
+      }
+    }
+  }
+}
