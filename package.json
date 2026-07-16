@@ -85,18 +85,20 @@
     "ora": "^8.2.0",
     "pluralize": "^8.0.0",
     "prettier": "^3.9.5",
-    "ts-morph": "^25.0.1"
+    "ts-morph": "^25.0.1",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/handlebars": "^4.0.40",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.0.15",
     "@types/pluralize": "^0.0.33",
     "@types/prettier": "^2.7.3",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^4.1.10",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.10"
   }
 }

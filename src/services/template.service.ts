@@ -6,7 +6,6 @@ export class TemplateService {
   private readonly loader = new TemplateLoader();
   private readonly renderer = new TemplateRenderer();
   private readonly cache = new TemplateCache();
-  private readonly loader = new TemplateLoader();
 
   async render(
     templateName: string,

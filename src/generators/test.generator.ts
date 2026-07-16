@@ -26,8 +26,8 @@ export class TestGenerator extends BaseGenerator implements IGenerator {
   }
 
   protected templateData(moduleName: string): Record<string, unknown> {
-  return {
-    name: moduleName,
-  };
-}
+    return {
+      name: moduleName,
+    };
+  }
 }

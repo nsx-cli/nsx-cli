@@ -1,4 +1,4 @@
-import path from 'path';
+﻿import path from 'path';
 import { Diagnostic, Node, Project } from 'ts-morph';
 import { PrismaLoader } from '../prisma/prisma-loader';
 import type { ProjectScannerResult } from '../../services/project-scanner.service';
@@ -200,7 +200,7 @@ export class DoctorAnalyzer {
     return diagnostics
       .filter((diagnostic) => diagnostic.getCode() === 6192)
       .map((diagnostic) => ({
-        severity: 'warning',
+        severity: 'warning' as DoctorSeverity,
         message: diagnostic.getMessageText().toString(),
         filePath: diagnostic.getSourceFile()?.getFilePath(),
         line: diagnostic.getLineNumber(),
@@ -252,8 +252,8 @@ export class DoctorAnalyzer {
           if (!seenCycles.has(signature)) {
             seenCycles.add(signature);
             issues.push({
-              severity: 'error',
-              message: `Dependência circular detectada: ${cycle.map((entry) => this.toRelative(entry)).join(' -> ')}`,
+              severity: 'error' as DoctorSeverity,
+              message: `DependÃªncia circular detectada: ${cycle.map((entry) => this.toRelative(entry)).join(' -> ')}`,
               details: cycle.map((entry) => this.toRelative(entry)),
             });
           }
@@ -296,11 +296,11 @@ export class DoctorAnalyzer {
       return {
         name: 'Prisma',
         status: 'warning',
-        summary: 'Prisma não foi detectado nas dependências do projeto.',
+        summary: 'Prisma nÃ£o foi detectado nas dependÃªncias do projeto.',
         issues: [
           {
-            severity: 'warning',
-            message: 'Dependências Prisma não encontradas no package.json.',
+            severity: 'warning' as DoctorSeverity,
+            message: 'DependÃªncias Prisma nÃ£o encontradas no package.json.',
           },
         ],
       };
@@ -315,7 +315,7 @@ export class DoctorAnalyzer {
         summary: `Schema Prisma encontrado em ${this.toRelative(schema.path)}.`,
         issues: [
           {
-            severity: 'info',
+            severity: 'info' as DoctorSeverity,
             message: `Schema Prisma carregado com sucesso: ${this.toRelative(schema.path)}`,
           },
         ],
@@ -327,7 +327,7 @@ export class DoctorAnalyzer {
         summary: 'Falha ao localizar ou ler o schema Prisma.',
         issues: [
           {
-            severity: 'error',
+            severity: 'error' as DoctorSeverity,
             message:
               error instanceof Error
                 ? error.message
@@ -348,11 +348,11 @@ export class DoctorAnalyzer {
       return {
         name: 'Nest',
         status: 'warning',
-        summary: 'O projeto não foi identificado como NestJS.',
+        summary: 'O projeto nÃ£o foi identificado como NestJS.',
         issues: [
           {
-            severity: 'warning',
-            message: 'Nenhuma dependência NestJS principal foi encontrada.',
+            severity: 'warning' as DoctorSeverity,
+            message: 'Nenhuma dependÃªncia NestJS principal foi encontrada.',
           },
         ],
       };
@@ -361,10 +361,10 @@ export class DoctorAnalyzer {
     return {
       name: 'Nest',
       status: 'info',
-      summary: `${modules.length} módulos, ${controllers.length} controllers e ${services.length} services identificados.`,
+      summary: `${modules.length} mÃ³dulos, ${controllers.length} controllers e ${services.length} services identificados.`,
       issues: [
         {
-          severity: 'info',
+          severity: 'info' as DoctorSeverity,
           message: 'Projeto identificado como NestJS.',
         },
       ],
@@ -379,11 +379,11 @@ export class DoctorAnalyzer {
       return {
         name: 'TypeScript',
         status: 'warning',
-        summary: 'tsconfig.json não encontrado.',
+        summary: 'tsconfig.json nÃ£o encontrado.',
         issues: [
           {
-            severity: 'warning',
-            message: 'Não foi possível validar TypeScript sem tsconfig.json.',
+            severity: 'warning' as DoctorSeverity,
+            message: 'NÃ£o foi possÃ­vel validar TypeScript sem tsconfig.json.',
           },
         ],
       };
@@ -393,7 +393,7 @@ export class DoctorAnalyzer {
       (diagnostic) => diagnostic.getCategory() === 1,
     );
     const issues = errors.slice(0, 20).map((diagnostic) => ({
-      severity: 'error',
+      severity: 'error' as DoctorSeverity,
       message: diagnostic.getMessageText().toString(),
       filePath: diagnostic.getSourceFile()?.getFilePath(),
       line: diagnostic.getLineNumber(),
@@ -409,7 +409,7 @@ export class DoctorAnalyzer {
       issues:
         issues.length > 0
           ? issues
-          : [{ severity: 'info', message: 'TypeScript validado sem erros.' }],
+          : [{ severity: 'info' as DoctorSeverity, message: 'TypeScript validado sem erros.' }],
     };
   }
 
@@ -419,19 +419,19 @@ export class DoctorAnalyzer {
       status: modules.length > 0 ? 'info' : 'warning',
       summary:
         modules.length > 0
-          ? `${modules.length} módulos encontrados.`
-          : 'Nenhum módulo encontrado.',
+          ? `${modules.length} mÃ³dulos encontrados.`
+          : 'Nenhum mÃ³dulo encontrado.',
       issues:
         modules.length > 0
           ? modules.slice(0, 20).map((module) => ({
-              severity: 'info',
-              message: `Módulo encontrado: ${module.className}`,
+              severity: 'info' as DoctorSeverity,
+              message: `MÃ³dulo encontrado: ${module.className}`,
               filePath: module.filePath,
             }))
           : [
               {
-                severity: 'warning',
-                message: 'Nenhum módulo Nest foi identificado no workspace.',
+                severity: 'warning' as DoctorSeverity,
+                message: 'Nenhum mÃ³dulo Nest foi identificado no workspace.',
               },
             ],
     };
@@ -450,13 +450,13 @@ export class DoctorAnalyzer {
       issues:
         controllers.length > 0
           ? controllers.slice(0, 20).map((controller) => ({
-              severity: 'info',
+              severity: 'info' as DoctorSeverity,
               message: `Controller encontrado: ${controller.className}`,
               filePath: controller.filePath,
             }))
           : [
               {
-                severity: 'warning',
+                severity: 'warning' as DoctorSeverity,
                 message: 'Nenhum controller foi identificado no workspace.',
               },
             ],
@@ -474,13 +474,13 @@ export class DoctorAnalyzer {
       issues:
         services.length > 0
           ? services.slice(0, 20).map((service) => ({
-              severity: 'info',
+              severity: 'info' as DoctorSeverity,
               message: `Service encontrado: ${service.className}`,
               filePath: service.filePath,
             }))
           : [
               {
-                severity: 'warning',
+                severity: 'warning' as DoctorSeverity,
                 message: 'Nenhum service foi identificado no workspace.',
               },
             ],
@@ -500,14 +500,14 @@ export class DoctorAnalyzer {
       issues:
         issues.length > 0
           ? issues.map((issue) => ({
-              severity: 'error',
+              severity: 'error' as DoctorSeverity,
               message: `Provider duplicado: ${issue.providerName}`,
               filePath: issue.filePath,
               line: issue.line,
             }))
           : [
               {
-                severity: 'info',
+                severity: 'info' as DoctorSeverity,
                 message: 'Nenhum provider duplicado foi identificado.',
               },
             ],
@@ -522,15 +522,15 @@ export class DoctorAnalyzer {
       status: issues.length > 0 ? 'warning' : 'info',
       summary:
         issues.length > 0
-          ? `${issues.length} import(es) não utilizado(s) encontrado(s).`
-          : 'Nenhum import não utilizado encontrado.',
+          ? `${issues.length} import(es) nÃ£o utilizado(s) encontrado(s).`
+          : 'Nenhum import nÃ£o utilizado encontrado.',
       issues:
         issues.length > 0
           ? issues
           : [
               {
-                severity: 'info',
-                message: 'Nenhum import não utilizado foi identificado.',
+                severity: 'info' as DoctorSeverity,
+                message: 'Nenhum import nÃ£o utilizado foi identificado.',
               },
             ],
     };
@@ -544,15 +544,15 @@ export class DoctorAnalyzer {
       status: issues.length > 0 ? 'error' : 'info',
       summary:
         issues.length > 0
-          ? `${issues.length} ciclo(s) de dependência encontrados.`
-          : 'Nenhuma dependência circular encontrada.',
+          ? `${issues.length} ciclo(s) de dependÃªncia encontrados.`
+          : 'Nenhuma dependÃªncia circular encontrada.',
       issues:
         issues.length > 0
           ? issues
           : [
               {
-                severity: 'info',
-                message: 'Nenhuma dependência circular foi identificada.',
+                severity: 'info' as DoctorSeverity,
+                message: 'Nenhuma dependÃªncia circular foi identificada.',
               },
             ],
     };
@@ -601,3 +601,5 @@ export class DoctorAnalyzer {
     return path.resolve(filePath).replace(/\\/g, '/');
   }
 }
+
+

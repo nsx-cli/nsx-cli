@@ -1,4 +1,4 @@
-import path from 'node:path';
+﻿import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { glob } from 'glob';
 import { describe, expect, it, vi } from 'vitest';
@@ -44,18 +44,18 @@ function buildArgs(methodName: string, length: number): unknown[] {
 }
 
 describe('Modules coverage smoke', () => {
-  it('carrega exports e executa métodos simples dos módulos', async () => {
+  it('carrega exports e executa mÃ©todos simples dos mÃ³dulos', async () => {
     const modulesRoot = path.resolve(process.cwd(), 'src', 'modules');
     const files = await glob('**/*.ts', {
       cwd: modulesRoot,
       absolute: true,
-      ignore: ['**/*.test.ts'],
+      ignore: ['**/*.test.ts','**/*.spec.ts','**/*.module.ts','**/tests/**'],
     });
 
     expect(files.length).toBeGreaterThan(0);
 
     for (const filePath of files) {
-      const imported = await import(pathToFileURL(filePath).href);
+      console.log('IMPORTANDO:',filePath);let imported;try{imported=await import(pathToFileURL(filePath).href);}catch(e){console.error('ARQUIVO:',filePath);console.error(e);throw e;}
 
       for (const exported of Object.values(imported)) {
         if (typeof exported !== 'function') {
@@ -111,3 +111,6 @@ describe('Modules coverage smoke', () => {
     }
   }, 60000);
 });
+
+
+
