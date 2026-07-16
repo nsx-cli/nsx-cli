@@ -1,9 +1,9 @@
-import { Command } from "commander";
-import { describe, expect, it, vi } from "vitest";
-import { AnalyzeCommand } from "./analyze.command";
+import { Command } from 'commander';
+import { describe, expect, it, vi } from 'vitest';
+import { AnalyzeCommand } from './analyze.command';
 
-describe("AnalyzeCommand", () => {
-  it("executa analyze e imprime resumo", async () => {
+describe('AnalyzeCommand', () => {
+  it('executa analyze e imprime resumo', async () => {
     const runMock = vi.fn().mockResolvedValue({
       report: {
         statistics: {
@@ -15,7 +15,7 @@ describe("AnalyzeCommand", () => {
         },
         sections: [],
       },
-      outputPath: "c:/workspace/.nsx/analyze-report.md",
+      outputPath: 'c:/workspace/.nsx/analyze-report.md',
     });
 
     const analyzeService = {
@@ -24,15 +24,22 @@ describe("AnalyzeCommand", () => {
 
     const command = new AnalyzeCommand(analyzeService as never);
     const program = new Command();
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     program.exitOverride();
 
     command.register(program);
 
-    await program.parseAsync(["analyze", "--output", "c:/workspace/report.md"], { from: "user" });
+    await program.parseAsync(
+      ['analyze', '--output', 'c:/workspace/report.md'],
+      { from: 'user' },
+    );
 
-    expect(runMock).toHaveBeenCalledWith({ outputPath: "c:/workspace/report.md" });
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Relatório salvo em"));
+    expect(runMock).toHaveBeenCalledWith({
+      outputPath: 'c:/workspace/report.md',
+    });
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Relatório salvo em'),
+    );
 
     logSpy.mockRestore();
   });

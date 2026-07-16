@@ -1,14 +1,14 @@
-import { PrismaDmmf } from "./prisma-dmmf";
-import { PrismaEnum } from "./prisma-enum";
-import { PrismaField } from "./prisma-field";
-import { PrismaLoader } from "./prisma-loader";
-import { PrismaModel } from "./prisma-model";
-import { PrismaRelation } from "./prisma-relation";
+import { PrismaDmmf } from './prisma-dmmf';
+import { PrismaEnum } from './prisma-enum';
+import { PrismaField } from './prisma-field';
+import { PrismaLoader } from './prisma-loader';
+import { PrismaModel } from './prisma-model';
+import { PrismaRelation } from './prisma-relation';
 
-type PrismaDocument = Awaited<ReturnType<PrismaDmmf["generate"]>>;
-type PrismaDocumentModel = PrismaDocument["datamodel"]["models"][number];
-type PrismaDocumentField = PrismaDocumentModel["fields"][number];
-type PrismaDocumentEnum = PrismaDocument["datamodel"]["enums"][number];
+type PrismaDocument = Awaited<ReturnType<PrismaDmmf['generate']>>;
+type PrismaDocumentModel = PrismaDocument['datamodel']['models'][number];
+type PrismaDocumentField = PrismaDocumentModel['fields'][number];
+type PrismaDocumentEnum = PrismaDocument['datamodel']['enums'][number];
 
 export class PrismaEngine {
   private readonly dmmfGenerator: PrismaDmmf;
@@ -18,7 +18,7 @@ export class PrismaEngine {
 
   constructor(
     private readonly loader: PrismaLoader,
-    dmmfGenerator: PrismaDmmf = new PrismaDmmf()
+    dmmfGenerator: PrismaDmmf = new PrismaDmmf(),
   ) {
     this.dmmfGenerator = dmmfGenerator;
   }
@@ -28,7 +28,9 @@ export class PrismaEngine {
     const document = await this.dmmfGenerator.generate(schemaFile.content);
 
     this.document = document;
-    this.models = document.datamodel.models.map((model) => this.toModel(model, document));
+    this.models = document.datamodel.models.map((model) =>
+      this.toModel(model, document),
+    );
     this.enums = document.datamodel.enums.map((entry) => this.toEnum(entry));
   }
 
@@ -57,16 +59,21 @@ export class PrismaEngine {
   }
 
   private resolveModel(model: PrismaModel | string): PrismaModel | undefined {
-    return typeof model === "string" ? this.getModel(model) : model;
+    return typeof model === 'string' ? this.getModel(model) : model;
   }
 
-  private toModel(model: PrismaDocumentModel, document: PrismaDocument): PrismaModel {
+  private toModel(
+    model: PrismaDocumentModel,
+    document: PrismaDocument,
+  ): PrismaModel {
     const fields = model.fields.map((field) => this.toField(field));
     const relations = model.fields
-      .filter((field) => field.kind === "object")
+      .filter((field) => field.kind === 'object')
       .map((field) => this.toRelation(model.name, field));
     const enums = document.datamodel.enums.filter((entry) =>
-      model.fields.some((field) => field.kind === "enum" && field.type === entry.name)
+      model.fields.some(
+        (field) => field.kind === 'enum' && field.type === entry.name,
+      ),
     );
 
     return new PrismaModel({
@@ -101,7 +108,10 @@ export class PrismaEngine {
     });
   }
 
-  private toRelation(modelName: string, field: PrismaDocumentField): PrismaRelation {
+  private toRelation(
+    modelName: string,
+    field: PrismaDocumentField,
+  ): PrismaRelation {
     const relationFromFields = field.relationFromFields ?? [];
     const relationToFields = field.relationToFields ?? [];
 

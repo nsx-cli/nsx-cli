@@ -1,4 +1,4 @@
-import { AiProvider } from "./ai.types";
+import { AiProvider } from './ai.types';
 
 export class AiProviderRegistry {
   private readonly providers = new Map<string, AiProvider>();

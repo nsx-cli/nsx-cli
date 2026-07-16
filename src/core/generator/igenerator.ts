@@ -1,4 +1,4 @@
-import { GeneratorMetadata } from "./generator-metadata";
+import { GeneratorMetadata } from './generator-metadata';
 
 export interface IGenerator {
   /**

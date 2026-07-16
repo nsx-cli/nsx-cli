@@ -1,7 +1,7 @@
-import type { Diagnostic } from "ts-morph";
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
+import type { Diagnostic } from 'ts-morph';
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
 
-export type DoctorSeverity = "info" | "warning" | "error";
+export type DoctorSeverity = 'info' | 'warning' | 'error';
 
 export interface DoctorIssue {
   message: string;

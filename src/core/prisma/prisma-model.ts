@@ -1,6 +1,6 @@
-import { PrismaEnum } from "./prisma-enum";
-import { PrismaField } from "./prisma-field";
-import { PrismaRelation } from "./prisma-relation";
+import { PrismaEnum } from './prisma-enum';
+import { PrismaField } from './prisma-field';
+import { PrismaRelation } from './prisma-relation';
 
 export interface PrismaModelProps {
   name: string;

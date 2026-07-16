@@ -1,13 +1,13 @@
-import { ExecutionStep } from "../execution-step";
-import { ExecutionStepType } from "../execution-step-type";
-import { ExecutionStepExecutor } from "../execution-step-executor";
-import { AddControllerOperation } from "../../ast/operations/add-controller.operation";
-import { ModuleCrudSupport } from "../module-crud-support";
+import { ExecutionStep } from '../execution-step';
+import { ExecutionStepType } from '../execution-step-type';
+import { ExecutionStepExecutor } from '../execution-step-executor';
+import { AddControllerOperation } from '../../ast/operations/add-controller.operation';
+import { ModuleCrudSupport } from '../module-crud-support';
 
 export class AddControllerExecutor implements ExecutionStepExecutor {
   constructor(
     private readonly moduleCrudSupport: ModuleCrudSupport,
-    private readonly operation: AddControllerOperation
+    private readonly operation: AddControllerOperation,
   ) {}
 
   supports(step: ExecutionStep): boolean {

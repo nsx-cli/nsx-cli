@@ -8,25 +8,25 @@ Motivo:
 
 DMMF oficial e estavel e suportado oficialmente.
 
-------------------------------------------------
+---
 
 ## ADR-002
 
 Toda modificacao TypeScript utiliza ts-morph.
 
-------------------------------------------------
+---
 
 ## ADR-003
 
 Planner separado do Executor.
 
-------------------------------------------------
+---
 
 ## ADR-004
 
 Registry substitui switch.
 
-------------------------------------------------
+---
 
 ## ADR-005
 
@@ -34,19 +34,19 @@ Generators nunca modificam arquivos existentes.
 
 Apenas Operations fazem isso.
 
-------------------------------------------------
+---
 
 ## ADR-006
 
 Todo Command e registrado no Bootstrap e resolvido via ApplicationContext.
 
-------------------------------------------------
+---
 
 ## ADR-007
 
 Toda feature so e considerada pronta com testes e build TypeScript valido.
 
-------------------------------------------------
+---
 
 ## ADR-008
 
@@ -56,7 +56,7 @@ Motivo:
 
 Evitar switch/case e manter extensao previsivel para novos targets.
 
-------------------------------------------------
+---
 
 ## ADR-009
 
@@ -66,7 +66,7 @@ Motivo:
 
 Separar orquestração, cálculo de métricas e apresentação para manter coesão, testabilidade e evolução incremental.
 
-------------------------------------------------
+---
 
 ## ADR-010
 
@@ -76,7 +76,7 @@ Motivo:
 
 Garantir dry-run previsível, preview de mudanças e reuso explícito de AnalyzeAnalyzer + operações AST existentes sem duplicar lógica de manipulação.
 
-------------------------------------------------
+---
 
 ## ADR-011
 
@@ -86,7 +86,7 @@ Motivo:
 
 Separar descoberta de dependencias (builder), apresentacao (formatter) e orquestracao/IO (service) para manter testabilidade e aderencia ao padrao de comandos existentes.
 
-------------------------------------------------
+---
 
 ## ADR-012
 
@@ -96,19 +96,19 @@ Motivo:
 
 Manter extensibilidade declarativa por metadata, reusar Template Method de BaseGenerator e evitar criacao de novo comando dedicado para geracao de testes.
 
-------------------------------------------------
+---
 
 ## ADR-013
 
 Marketplace de templates deve instalar overlays em .nsx/template-marketplace.json e o TemplateRegistry deve priorizar templates remotos instalados antes dos templates locais.
 
-------------------------------------------------
+---
 
 Motivo:
 
 Permitir uso imediato de templates remotos sem alterar a arquitetura dos generators existentes e manter a resolução idempotente e previsivel.
 
-------------------------------------------------
+---
 
 ## ADR-014
 
@@ -118,7 +118,7 @@ Motivo:
 
 Centralizar toda a regra na CLI, manter o comportamento consistente entre terminal e editor, e evitar divergencia entre o manifesto da extensao e o pipeline interno.
 
-------------------------------------------------
+---
 
 ## ADR-015
 
@@ -128,7 +128,7 @@ Motivo:
 
 Garantir descoberta natural no editor, manter a experiencia previsivel para o usuario e depender somente das contribution points oficiais da plataforma.
 
-------------------------------------------------
+---
 
 ## ADR-016
 
@@ -138,7 +138,7 @@ Motivo:
 
 Reduzir risco de regressao na entrega final e manter o processo de publicacao baseado em evidencias de qualidade do codigo-fonte real.
 
-------------------------------------------------
+---
 
 ## ADR-017
 

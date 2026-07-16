@@ -1,25 +1,39 @@
-import { Command } from "commander";
-import { GeneratorNotFoundException } from "../core/generator/exceptions/generator-not-found.exception";
-import { GeneratorRegistry } from "../core/generator/generator.registry";
+import { Command } from 'commander';
+import { GeneratorNotFoundException } from '../core/generator/exceptions/generator-not-found.exception';
+import { GeneratorRegistry } from '../core/generator/generator.registry';
 
-type MakeTarget = "api" | "resource";
+type MakeTarget = 'api' | 'resource';
 
 export class MakeCommand {
   private readonly targetRegistry = new Map<MakeTarget, string>([
-    ["api", "resource"],
-    ["resource", "resource"],
+    ['api', 'resource'],
+    ['resource', 'resource'],
   ]);
 
   constructor(private readonly generatorRegistry: GeneratorRegistry) {}
 
   public register(program: Command): void {
-    const make = program.command("make").description("Scaffold de recursos de alto nivel");
+    const make = program
+      .command('make')
+      .description('Scaffold de recursos de alto nivel');
 
-    this.registerTarget(make, "api", "Gera API completa a partir de um nome de recurso");
-    this.registerTarget(make, "resource", "Gera resource completo (module/controller/service/repository/entity/dto)");
+    this.registerTarget(
+      make,
+      'api',
+      'Gera API completa a partir de um nome de recurso',
+    );
+    this.registerTarget(
+      make,
+      'resource',
+      'Gera resource completo (module/controller/service/repository/entity/dto)',
+    );
   }
 
-  private registerTarget(make: Command, target: MakeTarget, description: string): void {
+  private registerTarget(
+    make: Command,
+    target: MakeTarget,
+    description: string,
+  ): void {
     make
       .command(`${target} <name>`)
       .description(description)
@@ -40,7 +54,9 @@ export class MakeCommand {
       await generator.generate(name);
     } catch (error) {
       if (error instanceof GeneratorNotFoundException) {
-        console.log(`❌ Generator '${generatorType}' não encontrado para make ${target}.`);
+        console.log(
+          `❌ Generator '${generatorType}' não encontrado para make ${target}.`,
+        );
         return;
       }
 

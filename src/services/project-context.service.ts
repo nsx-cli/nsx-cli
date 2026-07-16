@@ -1,6 +1,6 @@
-import { ConfigService } from "../config/config.service";
-import { ProjectScanner } from "./project-scanner.service";
-import { TemplateRegistry } from "./template-registry.service";
+import { ConfigService } from '../config/config.service';
+import { ProjectScanner } from './project-scanner.service';
+import { TemplateRegistry } from './template-registry.service';
 
 export interface ProjectContextData {
   project: Record<string, unknown>;
@@ -18,9 +18,13 @@ export class ProjectContext {
 
   constructor(
     private readonly rootDir: string = process.cwd(),
-    private readonly scanner: ProjectScanner = new ProjectScanner(process.cwd()),
-    private readonly configService: ConfigService = new ConfigService(process.cwd()),
-    private readonly templateRegistry: TemplateRegistry = new TemplateRegistry()
+    private readonly scanner: ProjectScanner = new ProjectScanner(
+      process.cwd(),
+    ),
+    private readonly configService: ConfigService = new ConfigService(
+      process.cwd(),
+    ),
+    private readonly templateRegistry: TemplateRegistry = new TemplateRegistry(),
   ) {}
 
   async load(): Promise<ProjectContextData> {

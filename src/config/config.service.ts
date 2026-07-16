@@ -1,5 +1,5 @@
-import { mkdir, pathExists, readJson, writeJson } from "fs-extra";
-import path from "path";
+import { mkdir, pathExists, readJson, writeJson } from 'fs-extra';
+import path from 'path';
 
 export interface NsxConfig {
   workspaceRoot?: string;
@@ -8,7 +8,11 @@ export interface NsxConfig {
 }
 
 export class ConfigService {
-  private readonly defaultCacheDir = path.resolve(process.cwd(), ".nsx", "cache");
+  private readonly defaultCacheDir = path.resolve(
+    process.cwd(),
+    '.nsx',
+    'cache',
+  );
 
   constructor(private readonly rootDir: string = process.cwd()) {}
 
@@ -29,11 +33,13 @@ export class ConfigService {
   }
 
   async exists(): Promise<boolean> {
-    return pathExists(this.getConfigJsonPath()) || pathExists(this.getConfigTsPath());
+    return (
+      pathExists(this.getConfigJsonPath()) || pathExists(this.getConfigTsPath())
+    );
   }
 
   async ensureCacheDir(): Promise<string> {
-    const cacheDir = path.resolve(this.rootDir, ".nsx", "cache");
+    const cacheDir = path.resolve(this.rootDir, '.nsx', 'cache');
     await this.mkdir(cacheDir);
     return cacheDir;
   }
@@ -58,7 +64,9 @@ export class ConfigService {
     }
 
     const tsConfig = await this.loadTsModule(filePath);
-    return tsConfig && typeof tsConfig === "object" ? (tsConfig as NsxConfig) : {};
+    return tsConfig && typeof tsConfig === 'object'
+      ? (tsConfig as NsxConfig)
+      : {};
   }
 
   private async loadTsModule(filePath: string): Promise<unknown> {
@@ -75,10 +83,10 @@ export class ConfigService {
   }
 
   private getConfigJsonPath(): string {
-    return path.resolve(this.rootDir, "nsx.config.json");
+    return path.resolve(this.rootDir, 'nsx.config.json');
   }
 
   private getConfigTsPath(): string {
-    return path.resolve(this.rootDir, "nsx.config.ts");
+    return path.resolve(this.rootDir, 'nsx.config.ts');
   }
 }

@@ -1,10 +1,10 @@
-const path = require("node:path");
+const path = require('node:path');
 
 function deriveNameFromResourcePath(resourcePath) {
-  const normalized = resourcePath.replace(/\\/g, "/");
+  const normalized = resourcePath.replace(/\\/g, '/');
   const baseName = path.posix.basename(normalized);
 
-  return baseName.replace(/\.[^.]+$/, "");
+  return baseName.replace(/\.[^.]+$/, '');
 }
 
 function resolveWorkspaceRootFromResource(vscodeApi, resourceUri) {

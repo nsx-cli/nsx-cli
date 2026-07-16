@@ -1,13 +1,15 @@
-import { Project } from "ts-morph";
-import { describe, expect, it, vi } from "vitest";
-import { AstPersistenceService } from "./ast-persistence.service";
+import { Project } from 'ts-morph';
+import { describe, expect, it, vi } from 'vitest';
+import { AstPersistenceService } from './ast-persistence.service';
 
-describe("AstPersistenceService", () => {
-  it("salva sourceFile, salva projeto inteiro e executa format", async () => {
+describe('AstPersistenceService', () => {
+  it('salva sourceFile, salva projeto inteiro e executa format', async () => {
     const project = new Project({ useInMemoryFileSystem: true });
-    const sourceFile = project.createSourceFile("a.ts", "export const a = 1;", { overwrite: true });
+    const sourceFile = project.createSourceFile('a.ts', 'export const a = 1;', {
+      overwrite: true,
+    });
 
-    const saveSpy = vi.spyOn(sourceFile, "save").mockResolvedValue(undefined);
+    const saveSpy = vi.spyOn(sourceFile, 'save').mockResolvedValue(undefined);
     const context = {
       saveProject: vi.fn().mockResolvedValue(undefined),
     };

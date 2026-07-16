@@ -1,16 +1,19 @@
-import { Command } from "commander";
-import { ApplicationContext, ServiceToken } from "../application/application-context";
-import { GeneratorRegistry } from "../generator/generator.registry";
-import { IGenerator } from "../generator/igenerator";
-import { PluginConfigResolver } from "./plugin-config-resolver";
-import { PluginLoader } from "./plugin-loader";
+import { Command } from 'commander';
+import {
+  ApplicationContext,
+  ServiceToken,
+} from '../application/application-context';
+import { GeneratorRegistry } from '../generator/generator.registry';
+import { IGenerator } from '../generator/igenerator';
+import { PluginConfigResolver } from './plugin-config-resolver';
+import { PluginLoader } from './plugin-loader';
 import {
   FailedPlugin,
   LoadedPlugin,
   PluginContext,
   PluginDescriptor,
   PluginInitializationResult,
-} from "./plugin.types";
+} from './plugin.types';
 
 export class PluginManager {
   private loaded: LoadedPlugin[] = [];
@@ -21,10 +24,13 @@ export class PluginManager {
   constructor(
     private readonly configResolver: PluginConfigResolver = new PluginConfigResolver(),
     private readonly loader: PluginLoader = new PluginLoader(),
-    private readonly rootDir: string = process.cwd()
+    private readonly rootDir: string = process.cwd(),
   ) {}
 
-  public async initialize(program: Command, applicationContext: ApplicationContext): Promise<PluginInitializationResult> {
+  public async initialize(
+    program: Command,
+    applicationContext: ApplicationContext,
+  ): Promise<PluginInitializationResult> {
     this.loaded = [];
     this.failed = [];
     this.skipped = [];
@@ -38,7 +44,12 @@ export class PluginManager {
         continue;
       }
 
-      const pluginContext = this.createPluginContext(program, applicationContext, generatorRegistry, descriptor);
+      const pluginContext = this.createPluginContext(
+        program,
+        applicationContext,
+        generatorRegistry,
+        descriptor,
+      );
 
       try {
         const definition = await this.loader.load(descriptor, pluginContext);
@@ -50,7 +61,10 @@ export class PluginManager {
       } catch (error) {
         this.failed.push({
           descriptor,
-          error: error instanceof Error ? error.message : "Erro desconhecido ao carregar plugin.",
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Erro desconhecido ao carregar plugin.',
           failedAt: new Date().toISOString(),
         });
       }
@@ -85,7 +99,7 @@ export class PluginManager {
     program: Command,
     applicationContext: ApplicationContext,
     generatorRegistry: GeneratorRegistry,
-    descriptor: PluginDescriptor
+    descriptor: PluginDescriptor,
   ): PluginContext {
     return {
       program,

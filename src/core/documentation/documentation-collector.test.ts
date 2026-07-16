@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { DocumentationCollector } from "./documentation-collector";
+import { describe, expect, it } from 'vitest';
+import { DocumentationCollector } from './documentation-collector';
 
-describe("DocumentationCollector", () => {
-  it("coleta snapshot com estrutura e prisma", async () => {
+describe('DocumentationCollector', () => {
+  it('coleta snapshot com estrutura e prisma', async () => {
     const scanner = {
       scan: async () => ({
         rootDir: process.cwd(),
@@ -24,25 +24,30 @@ describe("DocumentationCollector", () => {
 
     const prismaLoader = {
       load: async () => ({
-        path: "c:/repo/prisma/schema.prisma",
-        content: "model User { id Int @id }",
+        path: 'c:/repo/prisma/schema.prisma',
+        content: 'model User { id Int @id }',
       }),
     };
 
     const prismaDmmf = {
       generate: async () => ({
         datamodel: {
-          models: [{ name: "User" }],
-          enums: [{ name: "Role" }],
+          models: [{ name: 'User' }],
+          enums: [{ name: 'Role' }],
         },
       }),
     };
 
-    const collector = new DocumentationCollector(scanner as never, fileService as never, prismaLoader as never, prismaDmmf as never);
+    const collector = new DocumentationCollector(
+      scanner as never,
+      fileService as never,
+      prismaLoader as never,
+      prismaDmmf as never,
+    );
     const snapshot = await collector.collect();
 
     expect(snapshot.project.isNestJs).toBe(true);
-    expect(snapshot.prisma.models).toEqual(["User"]);
-    expect(snapshot.prisma.enums).toEqual(["Role"]);
+    expect(snapshot.prisma.models).toEqual(['User']);
+    expect(snapshot.prisma.enums).toEqual(['Role']);
   });
 });

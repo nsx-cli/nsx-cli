@@ -1,7 +1,7 @@
-import path from "path";
-import { readFile, stat } from "fs/promises";
-import { SchemaNotFoundException } from "./exceptions/schema-not-found.exception";
-import { SchemaReadException } from "./exceptions/schema-read.exception";
+import path from 'path';
+import { readFile, stat } from 'fs/promises';
+import { SchemaNotFoundException } from './exceptions/schema-not-found.exception';
+import { SchemaReadException } from './exceptions/schema-read.exception';
 
 export interface PrismaLoaderOptions {
   schemaPath?: string;
@@ -13,11 +13,13 @@ export interface PrismaSchemaFile {
 }
 
 export class PrismaLoader {
-  public async load(options: PrismaLoaderOptions = {}): Promise<PrismaSchemaFile> {
+  public async load(
+    options: PrismaLoaderOptions = {},
+  ): Promise<PrismaSchemaFile> {
     const resolvedSchemaPath = await this.resolveSchemaPath(options);
 
     try {
-      const content = await readFile(resolvedSchemaPath, "utf8");
+      const content = await readFile(resolvedSchemaPath, 'utf8');
 
       return {
         path: resolvedSchemaPath,
@@ -28,7 +30,9 @@ export class PrismaLoader {
     }
   }
 
-  public async resolveSchemaPath(options: PrismaLoaderOptions = {}): Promise<string> {
+  public async resolveSchemaPath(
+    options: PrismaLoaderOptions = {},
+  ): Promise<string> {
     if (options.schemaPath !== undefined) {
       const customSchemaPath = path.resolve(process.cwd(), options.schemaPath);
       await this.assertFileExists(customSchemaPath);
@@ -44,16 +48,18 @@ export class PrismaLoader {
     return foundSchemaPath;
   }
 
-  private async findSchemaPathFrom(startDir: string): Promise<string | undefined> {
+  private async findSchemaPathFrom(
+    startDir: string,
+  ): Promise<string | undefined> {
     let currentDir = path.resolve(startDir);
 
     while (true) {
-      const directSchemaPath = path.join(currentDir, "schema.prisma");
+      const directSchemaPath = path.join(currentDir, 'schema.prisma');
       if (await this.fileExists(directSchemaPath)) {
         return directSchemaPath;
       }
 
-      const prismaSchemaPath = path.join(currentDir, "prisma", "schema.prisma");
+      const prismaSchemaPath = path.join(currentDir, 'prisma', 'schema.prisma');
       if (await this.fileExists(prismaSchemaPath)) {
         return prismaSchemaPath;
       }

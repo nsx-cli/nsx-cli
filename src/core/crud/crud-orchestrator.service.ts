@@ -1,13 +1,13 @@
-import { CrudOrchestrator } from "./crud-generator";
-import { CrudExecutionReport } from "./crud-execution-report";
-import { CrudExecutor } from "./crud-executor";
-import { CrudPlanner } from "./crud-planner";
-import { PrismaModel } from "../prisma/prisma-model";
+import { CrudOrchestrator } from './crud-generator';
+import { CrudExecutionReport } from './crud-execution-report';
+import { CrudExecutor } from './crud-executor';
+import { CrudPlanner } from './crud-planner';
+import { PrismaModel } from '../prisma/prisma-model';
 
 export class CrudOrchestratorService implements CrudOrchestrator {
   constructor(
     private readonly planner: CrudPlanner,
-    private readonly executor: CrudExecutor
+    private readonly executor: CrudExecutor,
   ) {}
 
   public async execute(model: PrismaModel): Promise<CrudExecutionReport> {

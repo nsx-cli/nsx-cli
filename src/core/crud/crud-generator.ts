@@ -1,7 +1,7 @@
-import { PrismaEngine } from "../prisma/prisma-engine";
-import { PrismaModel } from "../prisma/prisma-model";
-import { CrudExecutionReport } from "./crud-execution-report";
-import { CrudModelNotFoundException } from "./exceptions/crud-model-not-found.exception";
+import { PrismaEngine } from '../prisma/prisma-engine';
+import { PrismaModel } from '../prisma/prisma-model';
+import { CrudExecutionReport } from './crud-execution-report';
+import { CrudModelNotFoundException } from './exceptions/crud-model-not-found.exception';
 
 export interface CrudOrchestrator {
   execute(model: PrismaModel): Promise<CrudExecutionReport>;
@@ -10,7 +10,7 @@ export interface CrudOrchestrator {
 export class CrudGenerator {
   constructor(
     private readonly prismaEngine: PrismaEngine,
-    private readonly crudOrchestrator: CrudOrchestrator
+    private readonly crudOrchestrator: CrudOrchestrator,
   ) {}
 
   public async generate(modelName: string): Promise<CrudExecutionReport> {

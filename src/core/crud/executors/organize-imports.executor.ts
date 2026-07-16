@@ -1,13 +1,13 @@
-import { ExecutionStep } from "../execution-step";
-import { ExecutionStepType } from "../execution-step-type";
-import { ExecutionStepExecutor } from "../execution-step-executor";
-import { OrganizeImportsOperation } from "../../ast/operations/organize-imports.operation";
-import { ModuleCrudSupport } from "../module-crud-support";
+import { ExecutionStep } from '../execution-step';
+import { ExecutionStepType } from '../execution-step-type';
+import { ExecutionStepExecutor } from '../execution-step-executor';
+import { OrganizeImportsOperation } from '../../ast/operations/organize-imports.operation';
+import { ModuleCrudSupport } from '../module-crud-support';
 
 export class OrganizeImportsExecutor implements ExecutionStepExecutor {
   constructor(
     private readonly moduleCrudSupport: ModuleCrudSupport,
-    private readonly operation: OrganizeImportsOperation
+    private readonly operation: OrganizeImportsOperation,
   ) {}
 
   supports(step: ExecutionStep): boolean {

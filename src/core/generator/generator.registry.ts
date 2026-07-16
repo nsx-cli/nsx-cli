@@ -1,15 +1,18 @@
-import { IGenerator } from "./igenerator";
-import { GeneratorMetadata, normalizeGeneratorType } from "./generator-metadata";
-import { GeneratorAlreadyRegisteredException } from "./exceptions/generator-already-registered.exception";
-import { GeneratorNotFoundException } from "./exceptions/generator-not-found.exception";
-import { GeneratorValidationException } from "./exceptions/generator-validation.exception";
+import { IGenerator } from './igenerator';
+import {
+  GeneratorMetadata,
+  normalizeGeneratorType,
+} from './generator-metadata';
+import { GeneratorAlreadyRegisteredException } from './exceptions/generator-already-registered.exception';
+import { GeneratorNotFoundException } from './exceptions/generator-not-found.exception';
+import { GeneratorValidationException } from './exceptions/generator-validation.exception';
 
 const ERROR_MESSAGE = {
-  EMPTY_TYPE: "Metadata type is required",
-  EMPTY_DESCRIPTION: "Metadata description is required",
-  EMPTY_CATEGORY: "Metadata category is required",
-  EMPTY_VERSION: "Metadata version is required",
-  DUPLICATE_ALIASES: "Metadata aliases must not contain duplicates",
+  EMPTY_TYPE: 'Metadata type is required',
+  EMPTY_DESCRIPTION: 'Metadata description is required',
+  EMPTY_CATEGORY: 'Metadata category is required',
+  EMPTY_VERSION: 'Metadata version is required',
+  DUPLICATE_ALIASES: 'Metadata aliases must not contain duplicates',
 } as const;
 
 export class GeneratorRegistry {
@@ -45,7 +48,8 @@ export class GeneratorRegistry {
     }
 
     const category = this.normalize(metadata.category);
-    const categoryTypes = this.typesByCategory.get(category) ?? new Set<string>();
+    const categoryTypes =
+      this.typesByCategory.get(category) ?? new Set<string>();
     categoryTypes.add(type);
     this.typesByCategory.set(category, categoryTypes);
   }

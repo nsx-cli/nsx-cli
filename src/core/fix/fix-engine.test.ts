@@ -1,18 +1,24 @@
-import { Project } from "ts-morph";
-import { describe, expect, it, vi } from "vitest";
-import { ExecutionPlan } from "./fix-result";
-import { FixEngine } from "./fix-engine";
+import { Project } from 'ts-morph';
+import { describe, expect, it, vi } from 'vitest';
+import { ExecutionPlan } from './fix-result';
+import { FixEngine } from './fix-engine';
 
-describe("FixEngine", () => {
-  it("executa plano quando dryRun = false", async () => {
-    const project = new Project({ useInMemoryFileSystem: true, skipFileDependencyResolution: true });
-    project.createSourceFile("/workspace/src/modules/user/user.module.ts", "export class UserModule {}");
+describe('FixEngine', () => {
+  it('executa plano quando dryRun = false', async () => {
+    const project = new Project({
+      useInMemoryFileSystem: true,
+      skipFileDependencyResolution: true,
+    });
+    project.createSourceFile(
+      '/workspace/src/modules/user/user.module.ts',
+      'export class UserModule {}',
+    );
 
     const scanner = {
       scan: vi.fn().mockResolvedValue({
-        rootDir: "/workspace",
-        packageJsonPath: "/workspace/package.json",
-        tsconfigPath: "/workspace/tsconfig.json",
+        rootDir: '/workspace',
+        packageJsonPath: '/workspace/package.json',
+        tsconfigPath: '/workspace/tsconfig.json',
         nestCliPath: null,
         packageJson: {},
         tsconfig: {},
@@ -32,9 +38,9 @@ describe("FixEngine", () => {
       analyze: vi.fn().mockResolvedValue({
         generatedAt: new Date().toISOString(),
         project: {
-          rootDir: "/workspace",
-          packageJsonPath: "/workspace/package.json",
-          tsconfigPath: "/workspace/tsconfig.json",
+          rootDir: '/workspace',
+          packageJsonPath: '/workspace/package.json',
+          tsconfigPath: '/workspace/tsconfig.json',
           nestCliPath: null,
           packageJson: {},
           tsconfig: {},
@@ -58,11 +64,11 @@ describe("FixEngine", () => {
       plan: vi.fn().mockReturnValue(
         new ExecutionPlan([
           {
-            type: "OrganizeImportsOperation",
-            filePath: "/workspace/src/modules/user/user.module.ts",
-            description: "Organizar imports",
+            type: 'OrganizeImportsOperation',
+            filePath: '/workspace/src/modules/user/user.module.ts',
+            description: 'Organizar imports',
           },
-        ])
+        ]),
       ),
     };
 
@@ -71,11 +77,11 @@ describe("FixEngine", () => {
         executedSteps: [
           {
             step: {
-              type: "OrganizeImportsOperation",
-              filePath: "/workspace/src/modules/user/user.module.ts",
-              description: "Organizar imports",
+              type: 'OrganizeImportsOperation',
+              filePath: '/workspace/src/modules/user/user.module.ts',
+              description: 'Organizar imports',
             },
-            status: "executed",
+            status: 'executed',
           },
         ],
         successCount: 1,
@@ -84,8 +90,8 @@ describe("FixEngine", () => {
     };
 
     const formatter = {
-      formatMarkdown: vi.fn().mockReturnValue("# report"),
-      formatPreview: vi.fn().mockReturnValue("preview"),
+      formatMarkdown: vi.fn().mockReturnValue('# report'),
+      formatPreview: vi.fn().mockReturnValue('preview'),
     };
 
     const fileService = {
@@ -100,25 +106,30 @@ describe("FixEngine", () => {
       planner as never,
       executor as never,
       formatter as never,
-      fileService as never
+      fileService as never,
     );
 
     const result = await engine.run();
 
-    expect(projectContext.open).toHaveBeenCalledWith({ tsConfigFilePath: "/workspace/tsconfig.json" });
+    expect(projectContext.open).toHaveBeenCalledWith({
+      tsConfigFilePath: '/workspace/tsconfig.json',
+    });
     expect(executor.execute).toHaveBeenCalledTimes(1);
     expect(projectContext.saveProject).toHaveBeenCalledTimes(1);
-    expect(result.preview).toBe("preview");
+    expect(result.preview).toBe('preview');
   });
 
-  it("não executa plano quando dryRun = true", async () => {
-    const project = new Project({ useInMemoryFileSystem: true, skipFileDependencyResolution: true });
+  it('não executa plano quando dryRun = true', async () => {
+    const project = new Project({
+      useInMemoryFileSystem: true,
+      skipFileDependencyResolution: true,
+    });
 
     const scanner = {
       scan: vi.fn().mockResolvedValue({
-        rootDir: "/workspace",
-        packageJsonPath: "/workspace/package.json",
-        tsconfigPath: "/workspace/tsconfig.json",
+        rootDir: '/workspace',
+        packageJsonPath: '/workspace/package.json',
+        tsconfigPath: '/workspace/tsconfig.json',
         nestCliPath: null,
         packageJson: {},
         tsconfig: {},
@@ -138,9 +149,9 @@ describe("FixEngine", () => {
       analyze: vi.fn().mockResolvedValue({
         generatedAt: new Date().toISOString(),
         project: {
-          rootDir: "/workspace",
-          packageJsonPath: "/workspace/package.json",
-          tsconfigPath: "/workspace/tsconfig.json",
+          rootDir: '/workspace',
+          packageJsonPath: '/workspace/package.json',
+          tsconfigPath: '/workspace/tsconfig.json',
           nestCliPath: null,
           packageJson: {},
           tsconfig: {},
@@ -169,8 +180,8 @@ describe("FixEngine", () => {
     };
 
     const formatter = {
-      formatMarkdown: vi.fn().mockReturnValue("# report"),
-      formatPreview: vi.fn().mockReturnValue("preview"),
+      formatMarkdown: vi.fn().mockReturnValue('# report'),
+      formatPreview: vi.fn().mockReturnValue('preview'),
     };
 
     const fileService = {
@@ -185,7 +196,7 @@ describe("FixEngine", () => {
       planner as never,
       executor as never,
       formatter as never,
-      fileService as never
+      fileService as never,
     );
 
     const result = await engine.run({ dryRun: true });

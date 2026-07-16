@@ -1,14 +1,18 @@
-import path from "path";
-import { Node, ObjectLiteralExpression, Project, SourceFile } from "ts-morph";
-import type { AnalyzeReport } from "../analyze/analyze.types";
-import { ExecutionPlan } from "./fix-result";
+import path from 'path';
+import { Node, ObjectLiteralExpression, Project, SourceFile } from 'ts-morph';
+import type { AnalyzeReport } from '../analyze/analyze.types';
+import { ExecutionPlan } from './fix-result';
 
 export class FixPlanner {
   public plan(project: Project, _analyzeReport: AnalyzeReport): ExecutionPlan {
     const plan = new ExecutionPlan();
     const moduleFiles = project
       .getSourceFiles()
-      .filter((sourceFile) => sourceFile.getBaseName().endsWith(".module.ts") && this.isWorkspaceSourceFile(sourceFile.getFilePath()));
+      .filter(
+        (sourceFile) =>
+          sourceFile.getBaseName().endsWith('.module.ts') &&
+          this.isWorkspaceSourceFile(sourceFile.getFilePath()),
+      );
 
     for (const moduleFile of moduleFiles) {
       this.planForModule(project, moduleFile, plan);
@@ -17,20 +21,31 @@ export class FixPlanner {
     return plan;
   }
 
-  private planForModule(project: Project, moduleFile: SourceFile, plan: ExecutionPlan): void {
+  private planForModule(
+    project: Project,
+    moduleFile: SourceFile,
+    plan: ExecutionPlan,
+  ): void {
     const moduleMetadata = this.resolveModuleMetadata(moduleFile);
 
     if (moduleMetadata === undefined) {
       return;
     }
 
-    const providerNames = this.readMetadataArray(moduleMetadata, "providers");
-    const controllerNames = this.readMetadataArray(moduleMetadata, "controllers");
-    const exportNames = this.readMetadataArray(moduleMetadata, "exports");
+    const providerNames = this.readMetadataArray(moduleMetadata, 'providers');
+    const controllerNames = this.readMetadataArray(
+      moduleMetadata,
+      'controllers',
+    );
+    const exportNames = this.readMetadataArray(moduleMetadata, 'exports');
 
     const siblingFiles = this.getSiblingSourceFiles(project, moduleFile);
-    const serviceFiles = siblingFiles.filter((sourceFile) => sourceFile.getBaseName().endsWith(".service.ts"));
-    const controllerFiles = siblingFiles.filter((sourceFile) => sourceFile.getBaseName().endsWith(".controller.ts"));
+    const serviceFiles = siblingFiles.filter((sourceFile) =>
+      sourceFile.getBaseName().endsWith('.service.ts'),
+    );
+    const controllerFiles = siblingFiles.filter((sourceFile) =>
+      sourceFile.getBaseName().endsWith('.controller.ts'),
+    );
 
     let plannedMutations = false;
 
@@ -43,12 +58,15 @@ export class FixPlanner {
 
       if (!providerNames.includes(className)) {
         plan.addStep({
-          type: "RegisterMissingProviderOperation",
+          type: 'RegisterMissingProviderOperation',
           filePath: moduleFile.getFilePath(),
           description: `Registrar provider ausente: ${className}`,
           data: {
             providerName: className,
-            importPath: this.resolveRelativeImportPath(moduleFile.getFilePath(), serviceFile.getFilePath()),
+            importPath: this.resolveRelativeImportPath(
+              moduleFile.getFilePath(),
+              serviceFile.getFilePath(),
+            ),
           },
         });
         plannedMutations = true;
@@ -56,12 +74,15 @@ export class FixPlanner {
 
       if (!exportNames.includes(className)) {
         plan.addStep({
-          type: "FixModuleExportsOperation",
+          type: 'FixModuleExportsOperation',
           filePath: moduleFile.getFilePath(),
           description: `Adicionar export ausente no módulo: ${className}`,
           data: {
             exportName: className,
-            importPath: this.resolveRelativeImportPath(moduleFile.getFilePath(), serviceFile.getFilePath()),
+            importPath: this.resolveRelativeImportPath(
+              moduleFile.getFilePath(),
+              serviceFile.getFilePath(),
+            ),
           },
         });
         plannedMutations = true;
@@ -77,12 +98,15 @@ export class FixPlanner {
 
       if (!controllerNames.includes(className)) {
         plan.addStep({
-          type: "RegisterMissingControllerOperation",
+          type: 'RegisterMissingControllerOperation',
           filePath: moduleFile.getFilePath(),
           description: `Registrar controller ausente: ${className}`,
           data: {
             controllerName: className,
-            importPath: this.resolveRelativeImportPath(moduleFile.getFilePath(), controllerFile.getFilePath()),
+            importPath: this.resolveRelativeImportPath(
+              moduleFile.getFilePath(),
+              controllerFile.getFilePath(),
+            ),
           },
         });
         plannedMutations = true;
@@ -91,24 +115,28 @@ export class FixPlanner {
 
     if (plannedMutations) {
       plan.addStep({
-        type: "OrganizeImportsOperation",
+        type: 'OrganizeImportsOperation',
         filePath: moduleFile.getFilePath(),
-        description: "Organizar imports do módulo",
+        description: 'Organizar imports do módulo',
       });
 
       plan.addStep({
-        type: "RemoveUnusedImportsOperation",
+        type: 'RemoveUnusedImportsOperation',
         filePath: moduleFile.getFilePath(),
-        description: "Remover imports não utilizados do módulo",
+        description: 'Remover imports não utilizados do módulo',
       });
     }
 
     this.planBarrelExports(moduleFile, siblingFiles, plan);
   }
 
-  private planBarrelExports(moduleFile: SourceFile, siblingFiles: SourceFile[], plan: ExecutionPlan): void {
+  private planBarrelExports(
+    moduleFile: SourceFile,
+    siblingFiles: SourceFile[],
+    plan: ExecutionPlan,
+  ): void {
     const directory = moduleFile.getDirectoryPath();
-    const indexFilePath = path.join(directory, "index.ts");
+    const indexFilePath = path.join(directory, 'index.ts');
     const indexFile = moduleFile.getProject().getSourceFile(indexFilePath);
     const exportTargets = siblingFiles
       .filter((sourceFile) => this.canBeBarrelExported(sourceFile, moduleFile))
@@ -119,15 +147,21 @@ export class FixPlanner {
       return;
     }
 
-    const existingExports = new Set((indexFile?.getExportDeclarations() ?? []).map((entry) => entry.getModuleSpecifierValue()));
-    const missingExports = exportTargets.filter((target) => !existingExports.has(target));
+    const existingExports = new Set(
+      (indexFile?.getExportDeclarations() ?? []).map((entry) =>
+        entry.getModuleSpecifierValue(),
+      ),
+    );
+    const missingExports = exportTargets.filter(
+      (target) => !existingExports.has(target),
+    );
 
     if (missingExports.length === 0) {
       return;
     }
 
     plan.addStep({
-      type: "FixBarrelExportsOperation",
+      type: 'FixBarrelExportsOperation',
       filePath: indexFilePath,
       description: `Adicionar ${missingExports.length} export(s) ausente(s) no barrel do módulo`,
       data: {
@@ -136,9 +170,16 @@ export class FixPlanner {
     });
   }
 
-  private resolveModuleMetadata(sourceFile: SourceFile): ObjectLiteralExpression | undefined {
-    const moduleClass = sourceFile.getClasses().find((classDeclaration) => classDeclaration.getDecorator("Module") !== undefined);
-    const moduleDecorator = moduleClass?.getDecorator("Module");
+  private resolveModuleMetadata(
+    sourceFile: SourceFile,
+  ): ObjectLiteralExpression | undefined {
+    const moduleClass = sourceFile
+      .getClasses()
+      .find(
+        (classDeclaration) =>
+          classDeclaration.getDecorator('Module') !== undefined,
+      );
+    const moduleDecorator = moduleClass?.getDecorator('Module');
     const callExpression = moduleDecorator?.getCallExpression();
     const firstArgument = callExpression?.getArguments()[0];
 
@@ -149,7 +190,10 @@ export class FixPlanner {
     return firstArgument;
   }
 
-  private readMetadataArray(metadata: ObjectLiteralExpression, key: string): string[] {
+  private readMetadataArray(
+    metadata: ObjectLiteralExpression,
+    key: string,
+  ): string[] {
     const property = metadata.getProperty(key);
 
     if (property === undefined || !Node.isPropertyAssignment(property)) {
@@ -167,35 +211,57 @@ export class FixPlanner {
 
   private resolveRelativeImportPath(fromPath: string, toPath: string): string {
     const fromDirectory = path.dirname(fromPath);
-    const rawPath = path.relative(fromDirectory, toPath).replace(/\\/g, "/");
-    const withoutExtension = rawPath.replace(/\.ts$/, "");
+    const rawPath = path.relative(fromDirectory, toPath).replace(/\\/g, '/');
+    const withoutExtension = rawPath.replace(/\.ts$/, '');
 
-    return withoutExtension.startsWith(".") ? withoutExtension : `./${withoutExtension}`;
+    return withoutExtension.startsWith('.')
+      ? withoutExtension
+      : `./${withoutExtension}`;
   }
 
-  private getSiblingSourceFiles(project: Project, moduleFile: SourceFile): SourceFile[] {
-    const moduleDir = path.resolve(moduleFile.getDirectoryPath()).replace(/\\/g, "/");
+  private getSiblingSourceFiles(
+    project: Project,
+    moduleFile: SourceFile,
+  ): SourceFile[] {
+    const moduleDir = path
+      .resolve(moduleFile.getDirectoryPath())
+      .replace(/\\/g, '/');
 
     return project
       .getSourceFiles()
       .filter((sourceFile) => {
-        const sourceDir = path.resolve(sourceFile.getDirectoryPath()).replace(/\\/g, "/");
+        const sourceDir = path
+          .resolve(sourceFile.getDirectoryPath())
+          .replace(/\\/g, '/');
 
-        return sourceDir === moduleDir && this.isWorkspaceSourceFile(sourceFile.getFilePath());
+        return (
+          sourceDir === moduleDir &&
+          this.isWorkspaceSourceFile(sourceFile.getFilePath())
+        );
       })
-      .sort((first, second) => first.getBaseName().localeCompare(second.getBaseName()));
+      .sort((first, second) =>
+        first.getBaseName().localeCompare(second.getBaseName()),
+      );
   }
 
-  private canBeBarrelExported(sourceFile: SourceFile, moduleFile: SourceFile): boolean {
+  private canBeBarrelExported(
+    sourceFile: SourceFile,
+    moduleFile: SourceFile,
+  ): boolean {
     if (sourceFile.getFilePath() === moduleFile.getFilePath()) {
       return true;
     }
 
-    return sourceFile.getBaseName().endsWith(".service.ts") || sourceFile.getBaseName().endsWith(".controller.ts");
+    return (
+      sourceFile.getBaseName().endsWith('.service.ts') ||
+      sourceFile.getBaseName().endsWith('.controller.ts')
+    );
   }
 
   private isWorkspaceSourceFile(filePath: string): boolean {
-    const normalized = path.resolve(filePath).replace(/\\/g, "/");
-    return normalized.includes("/src/") && !normalized.includes("/node_modules/");
+    const normalized = path.resolve(filePath).replace(/\\/g, '/');
+    return (
+      normalized.includes('/src/') && !normalized.includes('/node_modules/')
+    );
   }
 }

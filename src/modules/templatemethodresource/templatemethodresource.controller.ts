@@ -1,5 +1,5 @@
 export class TemplatemethodresourceController {
   findAll() {
-    return "TemplatemethodresourceController";
+    return 'TemplatemethodresourceController';
   }
 }

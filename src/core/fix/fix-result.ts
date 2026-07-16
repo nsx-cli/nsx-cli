@@ -1,13 +1,13 @@
-import type { AnalyzeReport } from "../analyze/analyze.types";
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
+import type { AnalyzeReport } from '../analyze/analyze.types';
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
 
 export type FixOperationType =
-  | "RemoveUnusedImportsOperation"
-  | "OrganizeImportsOperation"
-  | "RegisterMissingProviderOperation"
-  | "RegisterMissingControllerOperation"
-  | "FixModuleExportsOperation"
-  | "FixBarrelExportsOperation";
+  | 'RemoveUnusedImportsOperation'
+  | 'OrganizeImportsOperation'
+  | 'RegisterMissingProviderOperation'
+  | 'RegisterMissingControllerOperation'
+  | 'FixModuleExportsOperation'
+  | 'FixBarrelExportsOperation';
 
 export interface FixOperationStep {
   type: FixOperationType;
@@ -44,13 +44,17 @@ export class ExecutionPlan {
   }
 
   private sameStep(first: FixOperationStep, second: FixOperationStep): boolean {
-    return first.type === second.type && first.filePath === second.filePath && JSON.stringify(first.data ?? {}) === JSON.stringify(second.data ?? {});
+    return (
+      first.type === second.type &&
+      first.filePath === second.filePath &&
+      JSON.stringify(first.data ?? {}) === JSON.stringify(second.data ?? {})
+    );
   }
 }
 
 export interface FixExecutionEntry {
   step: FixOperationStep;
-  status: "executed" | "failed";
+  status: 'executed' | 'failed';
   error?: string;
 }
 

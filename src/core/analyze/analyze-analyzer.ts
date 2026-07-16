@@ -1,7 +1,7 @@
-import path from "path";
-import { Project, SourceFile, SyntaxKind } from "ts-morph";
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
-import { AnalyzeIssue, AnalyzeReport, AnalyzeSection } from "./analyze.types";
+import path from 'path';
+import { Project, SourceFile, SyntaxKind } from 'ts-morph';
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
+import { AnalyzeIssue, AnalyzeReport, AnalyzeSection } from './analyze.types';
 
 interface FileMetrics {
   filePath: string;
@@ -11,9 +11,17 @@ interface FileMetrics {
 }
 
 export class AnalyzeAnalyzer {
-  public async analyze(project: Project, projectInfo: ProjectScannerResult): Promise<AnalyzeReport> {
-    const sourceFiles = this.getWorkspaceSourceFiles(project, projectInfo.rootDir);
-    const metrics = sourceFiles.map((sourceFile) => this.computeMetrics(sourceFile));
+  public async analyze(
+    project: Project,
+    projectInfo: ProjectScannerResult,
+  ): Promise<AnalyzeReport> {
+    const sourceFiles = this.getWorkspaceSourceFiles(
+      project,
+      projectInfo.rootDir,
+    );
+    const metrics = sourceFiles.map((sourceFile) =>
+      this.computeMetrics(sourceFile),
+    );
 
     const sections: AnalyzeSection[] = [
       this.buildComplexitySection(metrics),
@@ -32,12 +40,16 @@ export class AnalyzeAnalyzer {
         averageComplexity: this.average(metrics.map((item) => item.complexity)),
         averageCoupling: this.average(metrics.map((item) => item.coupling)),
         averageCohesion: this.average(metrics.map((item) => item.cohesion)),
-        highComplexityFiles: metrics.filter((item) => item.complexity >= 10).length,
+        highComplexityFiles: metrics.filter((item) => item.complexity >= 10)
+          .length,
       },
     };
   }
 
-  private getWorkspaceSourceFiles(project: Project, rootDir: string): SourceFile[] {
+  private getWorkspaceSourceFiles(
+    project: Project,
+    rootDir: string,
+  ): SourceFile[] {
     const normalizedRoot = this.normalizePath(rootDir);
 
     return project
@@ -45,9 +57,15 @@ export class AnalyzeAnalyzer {
       .filter((sourceFile) => {
         const filePath = this.normalizePath(sourceFile.getFilePath());
 
-        return filePath.startsWith(normalizedRoot) && !filePath.includes("/node_modules/") && !sourceFile.isDeclarationFile();
+        return (
+          filePath.startsWith(normalizedRoot) &&
+          !filePath.includes('/node_modules/') &&
+          !sourceFile.isDeclarationFile()
+        );
       })
-      .sort((first, second) => first.getFilePath().localeCompare(second.getFilePath()));
+      .sort((first, second) =>
+        first.getFilePath().localeCompare(second.getFilePath()),
+      );
   }
 
   private computeMetrics(sourceFile: SourceFile): FileMetrics {
@@ -66,21 +84,41 @@ export class AnalyzeAnalyzer {
   private computeComplexity(sourceFile: SourceFile): number {
     let complexity = 1;
 
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.IfStatement).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.ForStatement).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.ForInStatement).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.ForOfStatement).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.WhileStatement).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.DoStatement).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.IfStatement,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.ForStatement,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.ForInStatement,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.ForOfStatement,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.WhileStatement,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.DoStatement,
+    ).length;
     complexity += sourceFile.getDescendantsOfKind(SyntaxKind.CaseClause).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.CatchClause).length;
-    complexity += sourceFile.getDescendantsOfKind(SyntaxKind.ConditionalExpression).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.CatchClause,
+    ).length;
+    complexity += sourceFile.getDescendantsOfKind(
+      SyntaxKind.ConditionalExpression,
+    ).length;
 
     return complexity;
   }
 
   private computeCoupling(sourceFile: SourceFile): number {
-    return sourceFile.getImportDeclarations().filter((declaration) => declaration.getModuleSpecifierValue().startsWith(".")).length;
+    return sourceFile
+      .getImportDeclarations()
+      .filter((declaration) =>
+        declaration.getModuleSpecifierValue().startsWith('.'),
+      ).length;
   }
 
   private computeCohesion(sourceFile: SourceFile): number {
@@ -111,15 +149,18 @@ export class AnalyzeAnalyzer {
     const issues = metrics
       .filter((item) => item.complexity >= 10)
       .map((item) => ({
-        severity: "warning" as const,
+        severity: 'warning' as const,
         message: `Complexidade alta: ${item.complexity}`,
         filePath: item.filePath,
       }));
 
     return {
-      name: "Complexidade",
-      status: issues.length > 0 ? "warning" : "info",
-      summary: issues.length > 0 ? `${issues.length} arquivo(s) com complexidade alta.` : "Complexidade dentro do esperado.",
+      name: 'Complexidade',
+      status: issues.length > 0 ? 'warning' : 'info',
+      summary:
+        issues.length > 0
+          ? `${issues.length} arquivo(s) com complexidade alta.`
+          : 'Complexidade dentro do esperado.',
       issues,
     };
   }
@@ -128,15 +169,18 @@ export class AnalyzeAnalyzer {
     const issues = metrics
       .filter((item) => item.coupling >= 8)
       .map((item) => ({
-        severity: "warning" as const,
+        severity: 'warning' as const,
         message: `Acoplamento elevado: ${item.coupling} imports relativos`,
         filePath: item.filePath,
       }));
 
     return {
-      name: "Acoplamento",
-      status: issues.length > 0 ? "warning" : "info",
-      summary: issues.length > 0 ? `${issues.length} arquivo(s) com acoplamento elevado.` : "Acoplamento dentro do esperado.",
+      name: 'Acoplamento',
+      status: issues.length > 0 ? 'warning' : 'info',
+      summary:
+        issues.length > 0
+          ? `${issues.length} arquivo(s) com acoplamento elevado.`
+          : 'Acoplamento dentro do esperado.',
       issues,
     };
   }
@@ -145,22 +189,32 @@ export class AnalyzeAnalyzer {
     const issues = metrics
       .filter((item) => item.cohesion < 40)
       .map((item) => ({
-        severity: "warning" as const,
+        severity: 'warning' as const,
         message: `Coesão baixa: ${item.cohesion}%`,
         filePath: item.filePath,
       }));
 
     return {
-      name: "Coesão",
-      status: issues.length > 0 ? "warning" : "info",
-      summary: issues.length > 0 ? `${issues.length} arquivo(s) com coesão baixa.` : "Coesão dentro do esperado.",
+      name: 'Coesão',
+      status: issues.length > 0 ? 'warning' : 'info',
+      summary:
+        issues.length > 0
+          ? `${issues.length} arquivo(s) com coesão baixa.`
+          : 'Coesão dentro do esperado.',
       issues,
     };
   }
 
   private buildArchitectureSection(sourceFiles: SourceFile[]): AnalyzeSection {
-    const paths = sourceFiles.map((sourceFile) => this.normalizePath(sourceFile.getFilePath()));
-    const requiredSegments = ["/src/core/", "/src/commands/", "/src/generators/", "/src/bootstrap/"];
+    const paths = sourceFiles.map((sourceFile) =>
+      this.normalizePath(sourceFile.getFilePath()),
+    );
+    const requiredSegments = [
+      '/src/core/',
+      '/src/commands/',
+      '/src/generators/',
+      '/src/bootstrap/',
+    ];
 
     const issues: AnalyzeIssue[] = [];
 
@@ -169,16 +223,21 @@ export class AnalyzeAnalyzer {
 
       if (!exists) {
         issues.push({
-          severity: "error",
-          message: `Camada arquitetural ausente: ${segment.replace("/src/", "src/")}`,
+          severity: 'error',
+          message: `Camada arquitetural ausente: ${segment.replace('/src/', 'src/')}`,
         });
       }
     }
 
     return {
-      name: "Arquitetura",
-      status: issues.some((item) => item.severity === "error") ? "error" : "info",
-      summary: issues.length > 0 ? "Inconsistências arquiteturais detectadas." : "Arquitetura base encontrada e consistente.",
+      name: 'Arquitetura',
+      status: issues.some((item) => item.severity === 'error')
+        ? 'error'
+        : 'info',
+      summary:
+        issues.length > 0
+          ? 'Inconsistências arquiteturais detectadas.'
+          : 'Arquitetura base encontrada e consistente.',
       issues,
     };
   }
@@ -191,36 +250,41 @@ export class AnalyzeAnalyzer {
 
     if (avgComplexity >= 8) {
       issues.push({
-        severity: "warning",
-        message: "Reduzir complexidade média com extração de estratégias e orquestradores.",
+        severity: 'warning',
+        message:
+          'Reduzir complexidade média com extração de estratégias e orquestradores.',
       });
     }
 
     if (avgCoupling >= 6) {
       issues.push({
-        severity: "warning",
-        message: "Reduzir acoplamento com inversão de dependência e serviços de camada.",
+        severity: 'warning',
+        message:
+          'Reduzir acoplamento com inversão de dependência e serviços de camada.',
       });
     }
 
     if (avgCohesion < 50) {
       issues.push({
-        severity: "warning",
-        message: "Aumentar coesão separando responsabilidades por classe/módulo.",
+        severity: 'warning',
+        message:
+          'Aumentar coesão separando responsabilidades por classe/módulo.',
       });
     }
 
     if (issues.length === 0) {
       issues.push({
-        severity: "info",
-        message: "Nenhuma ação crítica recomendada no momento.",
+        severity: 'info',
+        message: 'Nenhuma ação crítica recomendada no momento.',
       });
     }
 
     return {
-      name: "Sugestões",
-      status: issues.some((item) => item.severity === "warning") ? "warning" : "info",
-      summary: "Sugestões técnicas para evolução da arquitetura e manutenção.",
+      name: 'Sugestões',
+      status: issues.some((item) => item.severity === 'warning')
+        ? 'warning'
+        : 'info',
+      summary: 'Sugestões técnicas para evolução da arquitetura e manutenção.',
       issues,
     };
   }
@@ -235,6 +299,6 @@ export class AnalyzeAnalyzer {
   }
 
   private normalizePath(filePath: string): string {
-    return path.resolve(filePath).replace(/\\/g, "/");
+    return path.resolve(filePath).replace(/\\/g, '/');
   }
 }

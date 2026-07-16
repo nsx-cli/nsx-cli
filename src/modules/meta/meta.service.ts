@@ -1,5 +1,5 @@
 export class MetaService {
   findAll() {
-    return "MetaService";
+    return 'MetaService';
   }
 }

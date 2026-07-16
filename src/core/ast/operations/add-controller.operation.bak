@@ -1,0 +1,7 @@
+import { SourceFile } from "ts-morph";
+
+export class AddControllerOperation {
+  execute(input: AddControllerOperationInput): void {
+    // RC2
+  }
+}

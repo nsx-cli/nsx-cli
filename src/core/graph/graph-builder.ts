@@ -1,11 +1,17 @@
-import path from "path";
-import { Project, SourceFile } from "ts-morph";
-import { GraphCycle, GraphEdge, GraphNode, GraphReport } from "./graph.types";
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
+import path from 'path';
+import { Project, SourceFile } from 'ts-morph';
+import { GraphCycle, GraphEdge, GraphNode, GraphReport } from './graph.types';
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
 
 export class GraphBuilder {
-  public build(project: Project, projectInfo: ProjectScannerResult): GraphReport {
-    const sourceFiles = this.getWorkspaceSourceFiles(project, projectInfo.rootDir);
+  public build(
+    project: Project,
+    projectInfo: ProjectScannerResult,
+  ): GraphReport {
+    const sourceFiles = this.getWorkspaceSourceFiles(
+      project,
+      projectInfo.rootDir,
+    );
     const nodes = sourceFiles.map((sourceFile) => this.toNode(sourceFile));
     const idSet = new Set(nodes.map((node) => node.id));
     const edges = this.buildEdges(sourceFiles, idSet);
@@ -25,7 +31,10 @@ export class GraphBuilder {
     };
   }
 
-  private getWorkspaceSourceFiles(project: Project, rootDir: string): SourceFile[] {
+  private getWorkspaceSourceFiles(
+    project: Project,
+    rootDir: string,
+  ): SourceFile[] {
     const normalizedRoot = this.normalizePath(rootDir);
 
     return project
@@ -35,12 +44,14 @@ export class GraphBuilder {
 
         return (
           filePath.startsWith(normalizedRoot) &&
-          filePath.includes("/src/") &&
-          !filePath.includes("/node_modules/") &&
+          filePath.includes('/src/') &&
+          !filePath.includes('/node_modules/') &&
           !sourceFile.isDeclarationFile()
         );
       })
-      .sort((first, second) => first.getFilePath().localeCompare(second.getFilePath()));
+      .sort((first, second) =>
+        first.getFilePath().localeCompare(second.getFilePath()),
+      );
   }
 
   private toNode(sourceFile: SourceFile): GraphNode {
@@ -53,7 +64,10 @@ export class GraphBuilder {
     };
   }
 
-  private buildEdges(sourceFiles: SourceFile[], idSet: Set<string>): GraphEdge[] {
+  private buildEdges(
+    sourceFiles: SourceFile[],
+    idSet: Set<string>,
+  ): GraphEdge[] {
     const edges: GraphEdge[] = [];
     const dedup = new Set<string>();
 
@@ -84,7 +98,9 @@ export class GraphBuilder {
       }
     }
 
-    return edges.sort((first, second) => `${first.from}:${first.to}`.localeCompare(`${second.from}:${second.to}`));
+    return edges.sort((first, second) =>
+      `${first.from}:${first.to}`.localeCompare(`${second.from}:${second.to}`),
+    );
   }
 
   private detectCycles(nodes: GraphNode[], edges: GraphEdge[]): GraphCycle[] {
@@ -110,7 +126,7 @@ export class GraphBuilder {
 
         if (cycleStart >= 0) {
           const cyclePath = [...pathStack.slice(cycleStart), node];
-          const key = cyclePath.join("->");
+          const key = cyclePath.join('->');
 
           if (!cycleSet.has(key)) {
             cycleSet.add(key);
@@ -145,6 +161,6 @@ export class GraphBuilder {
   }
 
   private normalizePath(filePath: string): string {
-    return path.resolve(filePath).replace(/\\/g, "/");
+    return path.resolve(filePath).replace(/\\/g, '/');
   }
 }

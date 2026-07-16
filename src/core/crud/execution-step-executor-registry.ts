@@ -1,5 +1,5 @@
-import { ExecutionStep } from "./execution-step";
-import { ExecutionStepExecutor } from "./execution-step-executor";
+import { ExecutionStep } from './execution-step';
+import { ExecutionStepExecutor } from './execution-step-executor';
 
 export class ExecutionStepExecutorRegistry {
   private readonly executors: readonly ExecutionStepExecutor[];

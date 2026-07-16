@@ -1,6 +1,6 @@
-import { SourceFile } from "ts-morph";
+import { SourceFile } from 'ts-morph';
 
-export interface AddImportOperationInput {
+export interface AddImportOperationOptions {
   sourceFile: SourceFile;
   moduleSpecifier: string;
   namedImport?: string;
@@ -8,30 +8,32 @@ export interface AddImportOperationInput {
 }
 
 export class AddImportOperation {
-  public execute(input: AddImportOperationInput): void {
-    const declaration = input.sourceFile.getImportDeclaration(
-      (entry) => entry.getModuleSpecifierValue() === input.moduleSpecifier
-    );
+  execute(options: AddImportOperationOptions): void {
+    const { sourceFile, moduleSpecifier, namedImport, defaultImport } = options;
 
-    if (declaration === undefined) {
-      input.sourceFile.addImportDeclaration({
-        moduleSpecifier: input.moduleSpecifier,
-        namedImports: input.namedImport ? [input.namedImport] : [],
-        defaultImport: input.defaultImport,
-      });
+    const existing = sourceFile
+      .getImportDeclarations()
+      .find((i) => i.getModuleSpecifierValue() === moduleSpecifier);
+
+    if (existing) {
+      if (
+        namedImport &&
+        !existing.getNamedImports().some((n) => n.getName() === namedImport)
+      ) {
+        existing.addNamedImport(namedImport);
+      }
+
+      if (defaultImport && !existing.getDefaultImport()) {
+        existing.setDefaultImport(defaultImport);
+      }
+
       return;
     }
 
-    if (input.defaultImport !== undefined && declaration.getDefaultImport() === undefined) {
-      declaration.setDefaultImport(input.defaultImport);
-    }
-
-    if (input.namedImport !== undefined) {
-      const hasNamedImport = declaration.getNamedImports().some((entry) => entry.getName() === input.namedImport);
-
-      if (!hasNamedImport) {
-        declaration.addNamedImport(input.namedImport);
-      }
-    }
+    sourceFile.addImportDeclaration({
+      moduleSpecifier,
+      namedImports: namedImport ? [namedImport] : [],
+      defaultImport,
+    });
   }
 }

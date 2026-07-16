@@ -1,6 +1,6 @@
-import { ConfigService } from "../../config/config.service";
-import { AiProviderRegistry } from "./ai-provider-registry";
-import { AiRequest, AiResponse, AiRuntimeConfig } from "./ai.types";
+import { ConfigService } from '../../config/config.service';
+import { AiProviderRegistry } from './ai-provider-registry';
+import { AiRequest, AiResponse, AiRuntimeConfig } from './ai.types';
 
 interface AiConfigShape {
   ai?: {
@@ -13,7 +13,9 @@ interface AiConfigShape {
 export class AiService {
   constructor(
     private readonly registry: AiProviderRegistry,
-    private readonly configService: ConfigService = new ConfigService(process.cwd())
+    private readonly configService: ConfigService = new ConfigService(
+      process.cwd(),
+    ),
   ) {}
 
   public async ask(request: AiRequest): Promise<AiResponse> {
@@ -31,14 +33,18 @@ export class AiService {
     return this.registry.list();
   }
 
-  private async resolveRuntimeConfig(request: AiRequest): Promise<AiRuntimeConfig> {
+  private async resolveRuntimeConfig(
+    request: AiRequest,
+  ): Promise<AiRuntimeConfig> {
     const loaded = (await this.configService.load()) as AiConfigShape;
     const config = loaded.ai ?? {};
 
     return {
-      provider: request.provider ?? config.provider ?? "echo",
-      model: request.model ?? config.model ?? "gpt-4.1-mini",
-      temperature: this.normalizeTemperature(request.temperature ?? config.temperature ?? 0.2),
+      provider: request.provider ?? config.provider ?? 'echo',
+      model: request.model ?? config.model ?? 'gpt-4.1-mini',
+      temperature: this.normalizeTemperature(
+        request.temperature ?? config.temperature ?? 0.2,
+      ),
     };
   }
 

@@ -1,12 +1,17 @@
-import { Project } from "ts-morph";
-import { describe, expect, it } from "vitest";
-import { AnalyzeAnalyzer } from "./analyze-analyzer";
+import { Project } from 'ts-morph';
+import { describe, expect, it } from 'vitest';
+import { AnalyzeAnalyzer } from './analyze-analyzer';
 
-describe("AnalyzeAnalyzer", () => {
-  it("gera seções e estatísticas com warnings e sugestões", async () => {
-    const project = new Project({ useInMemoryFileSystem: true, skipFileDependencyResolution: true });
+describe('AnalyzeAnalyzer', () => {
+  it('gera seções e estatísticas com warnings e sugestões', async () => {
+    const project = new Project({
+      useInMemoryFileSystem: true,
+      skipFileDependencyResolution: true,
+    });
 
-    project.createSourceFile("/repo/src/core/complex.ts", `
+    project.createSourceFile(
+      '/repo/src/core/complex.ts',
+      `
 import { a } from "./a";
 import { b } from "./b";
 import { c } from "./c";
@@ -44,16 +49,30 @@ export class ComplexClass {
     }
   }
 }
-`, { overwrite: true });
+`,
+      { overwrite: true },
+    );
 
-    project.createSourceFile("/repo/src/commands/cmd.ts", `export class Cmd { execute() { return true; } }`, { overwrite: true });
-    project.createSourceFile("/repo/src/generators/gen.ts", `export class Gen { generate() { return true; } }`, { overwrite: true });
-    project.createSourceFile("/repo/src/bootstrap/boot.ts", `export class Boot {}`, { overwrite: true });
+    project.createSourceFile(
+      '/repo/src/commands/cmd.ts',
+      `export class Cmd { execute() { return true; } }`,
+      { overwrite: true },
+    );
+    project.createSourceFile(
+      '/repo/src/generators/gen.ts',
+      `export class Gen { generate() { return true; } }`,
+      { overwrite: true },
+    );
+    project.createSourceFile(
+      '/repo/src/bootstrap/boot.ts',
+      `export class Boot {}`,
+      { overwrite: true },
+    );
 
     const analyzer = new AnalyzeAnalyzer();
 
     const report = await analyzer.analyze(project, {
-      rootDir: "/repo",
+      rootDir: '/repo',
       packageJsonPath: null,
       tsconfigPath: null,
       nestCliPath: null,
@@ -66,20 +85,35 @@ export class ComplexClass {
     });
 
     expect(report.statistics.sourceFiles).toBe(4);
-    expect(report.sections.find((section) => section.name === "Complexidade")?.status).toBe("warning");
-    expect(report.sections.find((section) => section.name === "Acoplamento")?.status).toBe("warning");
-    expect(report.sections.find((section) => section.name === "Arquitetura")?.status).toBe("info");
-    expect(report.sections.find((section) => section.name === "Sugestões")?.issues.length).toBeGreaterThan(0);
+    expect(
+      report.sections.find((section) => section.name === 'Complexidade')
+        ?.status,
+    ).toBe('warning');
+    expect(
+      report.sections.find((section) => section.name === 'Acoplamento')?.status,
+    ).toBe('warning');
+    expect(
+      report.sections.find((section) => section.name === 'Arquitetura')?.status,
+    ).toBe('info');
+    expect(
+      report.sections.find((section) => section.name === 'Sugestões')?.issues
+        .length,
+    ).toBeGreaterThan(0);
   });
 
-  it("marca erro quando camada arquitetural obrigatória não existe", async () => {
-    const project = new Project({ useInMemoryFileSystem: true, skipFileDependencyResolution: true });
-    project.createSourceFile("/repo/src/only.ts", "export const x = 1;", { overwrite: true });
+  it('marca erro quando camada arquitetural obrigatória não existe', async () => {
+    const project = new Project({
+      useInMemoryFileSystem: true,
+      skipFileDependencyResolution: true,
+    });
+    project.createSourceFile('/repo/src/only.ts', 'export const x = 1;', {
+      overwrite: true,
+    });
 
     const analyzer = new AnalyzeAnalyzer();
 
     const report = await analyzer.analyze(project, {
-      rootDir: "/repo",
+      rootDir: '/repo',
       packageJsonPath: null,
       tsconfigPath: null,
       nestCliPath: null,
@@ -91,9 +125,11 @@ export class ComplexClass {
       usesTypeORM: false,
     });
 
-    const architecture = report.sections.find((section) => section.name === "Arquitetura");
+    const architecture = report.sections.find(
+      (section) => section.name === 'Arquitetura',
+    );
 
-    expect(architecture?.status).toBe("error");
+    expect(architecture?.status).toBe('error');
     expect(architecture?.issues.length).toBeGreaterThan(0);
   });
 });

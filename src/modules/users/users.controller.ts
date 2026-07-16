@@ -1,6 +1,5 @@
 export class UsersController {
   findAll() {
-    return "UsersController";
+    return 'UsersController';
   }
 }
-

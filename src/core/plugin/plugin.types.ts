@@ -1,14 +1,17 @@
-import { Command } from "commander";
-import { ApplicationContext, ServiceToken } from "../application/application-context";
-import { GeneratorRegistry } from "../generator/generator.registry";
-import { IGenerator } from "../generator/igenerator";
+import { Command } from 'commander';
+import {
+  ApplicationContext,
+  ServiceToken,
+} from '../application/application-context';
+import { GeneratorRegistry } from '../generator/generator.registry';
+import { IGenerator } from '../generator/igenerator';
 
 export interface PluginDescriptor {
   id: string;
   modulePath: string;
   options?: Record<string, unknown>;
   enabled: boolean;
-  source: "config" | "package";
+  source: 'config' | 'package';
 }
 
 export interface PluginConfigShape {

@@ -1,8 +1,8 @@
-import path from "path";
-import { GeneratorMetadata } from "../core/generator/generator-metadata";
-import { IGenerator } from "../core/generator/igenerator";
-import { FileService } from "../services/file.service";
-import { TemplateService } from "../services/template.service";
+import path from 'path';
+import { GeneratorMetadata } from '../core/generator/generator-metadata';
+import { IGenerator } from '../core/generator/igenerator';
+import { FileService } from '../services/file.service';
+import { TemplateService } from '../services/template.service';
 
 export abstract class BaseGenerator implements IGenerator {
   abstract readonly metadata: GeneratorMetadata;
@@ -38,26 +38,38 @@ export abstract class BaseGenerator implements IGenerator {
 
   protected validate(moduleName: string): void {
     if (!moduleName) {
-      throw new Error("Nome do módulo é obrigatório.");
+      throw new Error('Nome do módulo é obrigatório.');
     }
   }
 
-  protected abstract resolveOutputPath(moduleName: string): Promise<string> | string;
+  protected abstract resolveOutputPath(
+    moduleName: string,
+  ): Promise<string> | string;
 
   protected abstract templateName(): string;
 
-  protected abstract templateData(moduleName: string): Promise<Record<string, unknown>> | Record<string, unknown>;
+  protected abstract templateData(
+    moduleName: string,
+  ): Promise<Record<string, unknown>> | Record<string, unknown>;
 
   protected async render(moduleName: string): Promise<string> {
-    return this.templateService.render(this.templateName(), await this.templateData(moduleName));
+    return this.templateService.render(
+      this.templateName(),
+      await this.templateData(moduleName),
+    );
   }
 
   private async generateDto(moduleName: string): Promise<void> {
     const createOutputPath = await this.resolveOutputPath(moduleName);
     const updateOutputPath = this.resolveDtoUpdateOutputPath(createOutputPath);
 
-    if (await this.exists(createOutputPath) || await this.exists(updateOutputPath)) {
-      this.logAlreadyExists(path.relative(process.cwd(), path.dirname(createOutputPath)));
+    if (
+      (await this.exists(createOutputPath)) ||
+      (await this.exists(updateOutputPath))
+    ) {
+      this.logAlreadyExists(
+        path.relative(process.cwd(), path.dirname(createOutputPath)),
+      );
       return;
     }
 
@@ -65,38 +77,57 @@ export abstract class BaseGenerator implements IGenerator {
 
     const templateData = await this.templateData(moduleName);
 
-    await this.write(createOutputPath, await this.templateService.render(this.templateName(), templateData));
-    await this.write(updateOutputPath, await this.templateService.render("dto/update", this.buildDtoUpdateTemplateData(templateData, moduleName)));
+    await this.write(
+      createOutputPath,
+      await this.templateService.render(this.templateName(), templateData),
+    );
+    await this.write(
+      updateOutputPath,
+      await this.templateService.render(
+        'dto/update',
+        this.buildDtoUpdateTemplateData(templateData, moduleName),
+      ),
+    );
     await this.afterGenerate(moduleName, createOutputPath);
 
-    this.logSuccess(path.relative(process.cwd(), path.dirname(createOutputPath)));
+    this.logSuccess(
+      path.relative(process.cwd(), path.dirname(createOutputPath)),
+    );
   }
 
   private resolveDtoUpdateOutputPath(createOutputPath: string): string {
-    return createOutputPath.replace("create-", "update-");
+    return createOutputPath.replace('create-', 'update-');
   }
 
   private buildDtoUpdateTemplateData(
     templateData: Record<string, unknown>,
-    moduleName: string
+    moduleName: string,
   ): Record<string, unknown> {
-    const className = typeof templateData.className === "string" ? templateData.className : `${this.toPascalCase(moduleName)}CreateDto`;
+    const className =
+      typeof templateData.className === 'string'
+        ? templateData.className
+        : `${this.toPascalCase(moduleName)}CreateDto`;
 
     return {
       ...templateData,
-      className: className.endsWith("CreateDto") ? className.replace("CreateDto", "UpdateDto") : `${this.toPascalCase(moduleName)}UpdateDto`,
+      className: className.endsWith('CreateDto')
+        ? className.replace('CreateDto', 'UpdateDto')
+        : `${this.toPascalCase(moduleName)}UpdateDto`,
     };
   }
 
   private isDtoGenerator(): boolean {
-    return this.metadata.type === "dto";
+    return this.metadata.type === 'dto';
   }
 
   protected async write(outputPath: string, content: string): Promise<void> {
     await this.writeFile(outputPath, content);
   }
 
-  protected async afterGenerate(_moduleName: string, _outputPath: string): Promise<void> {
+  protected async afterGenerate(
+    _moduleName: string,
+    _outputPath: string,
+  ): Promise<void> {
     return Promise.resolve();
   }
 
@@ -104,7 +135,11 @@ export abstract class BaseGenerator implements IGenerator {
     return name.trim().toLowerCase();
   }
 
-  protected async renderTemplate(templateName: string, outputPath: string, data: Record<string, unknown>): Promise<void> {
+  protected async renderTemplate(
+    templateName: string,
+    outputPath: string,
+    data: Record<string, unknown>,
+  ): Promise<void> {
     const content = await this.templateService.render(templateName, data);
     await this.writeFile(outputPath, content);
   }
@@ -138,6 +173,6 @@ export abstract class BaseGenerator implements IGenerator {
       .split(/[^a-zA-Z0-9]+/)
       .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join("");
+      .join('');
   }
 }

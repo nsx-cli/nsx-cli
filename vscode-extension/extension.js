@@ -1,9 +1,9 @@
-const vscode = require("vscode");
-const { createNsxRunner } = require("./src/nsx-runner");
+const vscode = require('vscode');
+const { createNsxRunner } = require('./src/nsx-runner');
 const {
   deriveNameFromResourcePath,
   resolveWorkspaceRootFromResource,
-} = require("./src/workspace-utils");
+} = require('./src/workspace-utils');
 const {
   buildDoctorArgs,
   buildAnalyzeArgs,
@@ -15,127 +15,164 @@ const {
   buildPrismaCrudArgs,
   buildMarketplaceListArgs,
   buildMarketplaceInstallArgs,
-} = require("./src/nsx-commands");
+} = require('./src/nsx-commands');
 
 function activate(context) {
-  const outputChannel = vscode.window.createOutputChannel("NSX CLI");
+  const outputChannel = vscode.window.createOutputChannel('NSX CLI');
   const runner = createNsxRunner(vscode, outputChannel);
   const workspaceRoot = resolveWorkspaceRootFromResource(vscode);
 
   const register = (commandId, handler) => {
-    context.subscriptions.push(vscode.commands.registerCommand(commandId, handler));
+    context.subscriptions.push(
+      vscode.commands.registerCommand(commandId, handler),
+    );
   };
 
-  register("nsx.doctor", async () => {
-    await runCliCommand(runner, buildDoctorArgs(), outputChannel, workspaceRoot);
+  register('nsx.doctor', async () => {
+    await runCliCommand(
+      runner,
+      buildDoctorArgs(),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.analyze", async () => {
-    await runCliCommand(runner, buildAnalyzeArgs(), outputChannel, workspaceRoot);
+  register('nsx.analyze', async () => {
+    await runCliCommand(
+      runner,
+      buildAnalyzeArgs(),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.fix.dryRun", async () => {
-    await runCliCommand(runner, buildFixArgs({ dryRun: true }), outputChannel, workspaceRoot);
+  register('nsx.fix.dryRun', async () => {
+    await runCliCommand(
+      runner,
+      buildFixArgs({ dryRun: true }),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.fix.apply", async () => {
-    await runCliCommand(runner, buildFixArgs({ dryRun: false }), outputChannel, workspaceRoot);
+  register('nsx.fix.apply', async () => {
+    await runCliCommand(
+      runner,
+      buildFixArgs({ dryRun: false }),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.graph", async () => {
+  register('nsx.graph', async () => {
     await runCliCommand(runner, buildGraphArgs(), outputChannel, workspaceRoot);
   });
 
-  register("nsx.docs.generate", async () => {
-    await runCliCommand(runner, buildDocsGenerateArgs(), outputChannel, workspaceRoot);
+  register('nsx.docs.generate', async () => {
+    await runCliCommand(
+      runner,
+      buildDocsGenerateArgs(),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.generate.module", async (resourceUri) => {
+  register('nsx.generate.module', async (resourceUri) => {
     await runGenerateCommand({
       runner,
       outputChannel,
       resourceUri,
-      type: "module",
-      commandId: "nsx.generate.module",
+      type: 'module',
+      commandId: 'nsx.generate.module',
     });
   });
 
-  register("nsx.generate.module.fromFolder", async (resourceUri) => {
+  register('nsx.generate.module.fromFolder', async (resourceUri) => {
     await runGenerateCommand({
       runner,
       outputChannel,
       resourceUri,
-      type: "module",
-      commandId: "nsx.generate.module.fromFolder",
+      type: 'module',
+      commandId: 'nsx.generate.module.fromFolder',
       preferResourceName: true,
     });
   });
 
-  register("nsx.generate.test", async (resourceUri) => {
+  register('nsx.generate.test', async (resourceUri) => {
     await runGenerateCommand({
       runner,
       outputChannel,
       resourceUri,
-      type: "test",
-      commandId: "nsx.generate.test",
+      type: 'test',
+      commandId: 'nsx.generate.test',
     });
   });
 
-  register("nsx.generate.test.fromFolder", async (resourceUri) => {
+  register('nsx.generate.test.fromFolder', async (resourceUri) => {
     await runGenerateCommand({
       runner,
       outputChannel,
       resourceUri,
-      type: "test",
-      commandId: "nsx.generate.test.fromFolder",
+      type: 'test',
+      commandId: 'nsx.generate.test.fromFolder',
       preferResourceName: true,
     });
   });
 
-  register("nsx.make.resource", async (resourceUri) => {
+  register('nsx.make.resource', async (resourceUri) => {
     await runMakeCommand({
       runner,
       outputChannel,
       resourceUri,
-      target: "resource",
-      commandId: "nsx.make.resource",
+      target: 'resource',
+      commandId: 'nsx.make.resource',
     });
   });
 
-  register("nsx.make.resource.fromFolder", async (resourceUri) => {
+  register('nsx.make.resource.fromFolder', async (resourceUri) => {
     await runMakeCommand({
       runner,
       outputChannel,
       resourceUri,
-      target: "resource",
-      commandId: "nsx.make.resource.fromFolder",
+      target: 'resource',
+      commandId: 'nsx.make.resource.fromFolder',
       preferResourceName: true,
     });
   });
 
-  register("nsx.prisma.crud", async (resourceUri) => {
-    await runPrismaCrudCommand({ runner, outputChannel, resourceUri, commandId: "nsx.prisma.crud" });
-  });
-
-  register("nsx.prisma.crud.fromFolder", async (resourceUri) => {
+  register('nsx.prisma.crud', async (resourceUri) => {
     await runPrismaCrudCommand({
       runner,
       outputChannel,
       resourceUri,
-      commandId: "nsx.prisma.crud.fromFolder",
+      commandId: 'nsx.prisma.crud',
+    });
+  });
+
+  register('nsx.prisma.crud.fromFolder', async (resourceUri) => {
+    await runPrismaCrudCommand({
+      runner,
+      outputChannel,
+      resourceUri,
+      commandId: 'nsx.prisma.crud.fromFolder',
       preferResourceName: true,
     });
   });
 
-  register("nsx.marketplace.templates.list", async () => {
-    await runCliCommand(runner, buildMarketplaceListArgs(), outputChannel, workspaceRoot);
+  register('nsx.marketplace.templates.list', async () => {
+    await runCliCommand(
+      runner,
+      buildMarketplaceListArgs(),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
-  register("nsx.marketplace.templates.install", async () => {
+  register('nsx.marketplace.templates.install', async () => {
     const packId = await vscode.window.showInputBox({
-      title: "NSX Marketplace",
-      prompt: "Template pack identifier",
-      placeHolder: "enterprise-controller",
+      title: 'NSX Marketplace',
+      prompt: 'Template pack identifier',
+      placeHolder: 'enterprise-controller',
       ignoreFocusOut: true,
     });
 
@@ -143,7 +180,12 @@ function activate(context) {
       return;
     }
 
-    await runCliCommand(runner, buildMarketplaceInstallArgs(packId), outputChannel, workspaceRoot);
+    await runCliCommand(
+      runner,
+      buildMarketplaceInstallArgs(packId),
+      outputChannel,
+      workspaceRoot,
+    );
   });
 
   context.subscriptions.push(outputChannel);
@@ -164,7 +206,7 @@ async function runCliCommand(runner, args, outputChannel, cwd) {
       outputChannel.append(result.stderr);
     }
 
-    vscode.window.showInformationMessage("NSX CLI finished successfully.");
+    vscode.window.showInformationMessage('NSX CLI finished successfully.');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     outputChannel.appendLine(message);
@@ -172,47 +214,91 @@ async function runCliCommand(runner, args, outputChannel, cwd) {
   }
 }
 
-async function runGenerateCommand({ runner, outputChannel, resourceUri, type, commandId, preferResourceName = false }) {
+async function runGenerateCommand({
+  runner,
+  outputChannel,
+  resourceUri,
+  type,
+  commandId,
+  preferResourceName = false,
+}) {
   const workspaceRoot = resolveWorkspaceRootFromResource(vscode, resourceUri);
-  const resourceName = preferResourceName && resourceUri ? deriveNameFromResourcePath(resourceUri.fsPath) : undefined;
+  const resourceName =
+    preferResourceName && resourceUri
+      ? deriveNameFromResourcePath(resourceUri.fsPath)
+      : undefined;
   const name = await promptForName(vscode, type, resourceName);
 
   if (!name) {
     return;
   }
 
-  await runCliCommand(runner, buildGenerateArgs(type, name), outputChannel, workspaceRoot);
+  await runCliCommand(
+    runner,
+    buildGenerateArgs(type, name),
+    outputChannel,
+    workspaceRoot,
+  );
 }
 
-async function runMakeCommand({ runner, outputChannel, resourceUri, target, commandId, preferResourceName = false }) {
+async function runMakeCommand({
+  runner,
+  outputChannel,
+  resourceUri,
+  target,
+  commandId,
+  preferResourceName = false,
+}) {
   const workspaceRoot = resolveWorkspaceRootFromResource(vscode, resourceUri);
-  const resourceName = preferResourceName && resourceUri ? deriveNameFromResourcePath(resourceUri.fsPath) : undefined;
+  const resourceName =
+    preferResourceName && resourceUri
+      ? deriveNameFromResourcePath(resourceUri.fsPath)
+      : undefined;
   const name = await promptForName(vscode, target, resourceName);
 
   if (!name) {
     return;
   }
 
-  await runCliCommand(runner, buildMakeArgs(target, name), outputChannel, workspaceRoot);
+  await runCliCommand(
+    runner,
+    buildMakeArgs(target, name),
+    outputChannel,
+    workspaceRoot,
+  );
 }
 
-async function runPrismaCrudCommand({ runner, outputChannel, resourceUri, commandId, preferResourceName = false }) {
+async function runPrismaCrudCommand({
+  runner,
+  outputChannel,
+  resourceUri,
+  commandId,
+  preferResourceName = false,
+}) {
   const workspaceRoot = resolveWorkspaceRootFromResource(vscode, resourceUri);
-  const suggestedName = preferResourceName && resourceUri ? deriveNameFromResourcePath(resourceUri.fsPath) : undefined;
-  const modelName = await promptForName(vscode, "Prisma model", suggestedName);
+  const suggestedName =
+    preferResourceName && resourceUri
+      ? deriveNameFromResourcePath(resourceUri.fsPath)
+      : undefined;
+  const modelName = await promptForName(vscode, 'Prisma model', suggestedName);
 
   if (!modelName) {
     return;
   }
 
-  await runCliCommand(runner, buildPrismaCrudArgs(modelName), outputChannel, workspaceRoot);
+  await runCliCommand(
+    runner,
+    buildPrismaCrudArgs(modelName),
+    outputChannel,
+    workspaceRoot,
+  );
 }
 
 async function promptForName(vscodeApi, label, suggestedValue) {
   return vscodeApi.window.showInputBox({
-    title: "NSX CLI",
+    title: 'NSX CLI',
     prompt: `${label} name`,
-    value: suggestedValue ?? "",
+    value: suggestedValue ?? '',
     ignoreFocusOut: true,
   });
 }

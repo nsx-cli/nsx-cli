@@ -1,4 +1,4 @@
-import { FileSystem } from "./file-system.service";
+import { FileSystem } from './file-system.service';
 
 export class FileService {
   private readonly fileSystem = new FileSystem();

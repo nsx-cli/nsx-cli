@@ -1,4 +1,4 @@
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
 
 export interface DocumentationRoute {
   controller: string;

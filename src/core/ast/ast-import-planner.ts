@@ -1,4 +1,4 @@
-import { ImportDeclarationStructure, OptionalKind, SourceFile } from "ts-morph";
+import { ImportDeclarationStructure, OptionalKind, SourceFile } from 'ts-morph';
 
 export interface PlanNamedImportOptions {
   sourceFile: SourceFile;
@@ -13,32 +13,40 @@ export interface PlanDefaultImportOptions {
 }
 
 export class AstImportPlanner {
-  public planNamedImport(options: PlanNamedImportOptions): OptionalKind<ImportDeclarationStructure> {
+  public planNamedImport(
+    options: PlanNamedImportOptions,
+  ): OptionalKind<ImportDeclarationStructure> {
     const existing = options.sourceFile.getImportDeclaration(
-      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier
+      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier,
     );
 
-    const namedImports = existing
-      ?.getNamedImports()
-      .map((entry) => entry.getName())
-      .filter((entry) => entry !== options.namedImport) ?? [];
+    const namedImports =
+      existing
+        ?.getNamedImports()
+        .map((entry) => entry.getName())
+        .filter((entry) => entry !== options.namedImport) ?? [];
 
     return {
       moduleSpecifier: options.moduleSpecifier,
       defaultImport: existing?.getDefaultImport()?.getText() ?? undefined,
-      namedImports: [...namedImports, options.namedImport].sort((first, second) => first.localeCompare(second)),
+      namedImports: [...namedImports, options.namedImport].sort(
+        (first, second) => first.localeCompare(second),
+      ),
     };
   }
 
-  public planDefaultImport(options: PlanDefaultImportOptions): OptionalKind<ImportDeclarationStructure> {
+  public planDefaultImport(
+    options: PlanDefaultImportOptions,
+  ): OptionalKind<ImportDeclarationStructure> {
     const existing = options.sourceFile.getImportDeclaration(
-      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier
+      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier,
     );
 
     return {
       moduleSpecifier: options.moduleSpecifier,
       defaultImport: options.defaultImport,
-      namedImports: existing?.getNamedImports().map((entry) => entry.getName()) ?? [],
+      namedImports:
+        existing?.getNamedImports().map((entry) => entry.getName()) ?? [],
     };
   }
 }

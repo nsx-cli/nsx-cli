@@ -1,4 +1,4 @@
-import { ExecutionStep } from "./execution-step";
+import { ExecutionStep } from './execution-step';
 
 export class ExecutionPlan {
   private steps: ExecutionStep[];
@@ -12,7 +12,9 @@ export class ExecutionPlan {
   }
 
   public removeStep(step: ExecutionStep): void {
-    this.steps = this.steps.filter((currentStep) => !this.sameStep(currentStep, step));
+    this.steps = this.steps.filter(
+      (currentStep) => !this.sameStep(currentStep, step),
+    );
   }
 
   public hasStep(step: ExecutionStep): boolean {
@@ -27,7 +29,13 @@ export class ExecutionPlan {
     this.steps = [];
   }
 
-  private sameStep(firstStep: ExecutionStep, secondStep: ExecutionStep): boolean {
-    return firstStep.type === secondStep.type && firstStep.target === secondStep.target;
+  private sameStep(
+    firstStep: ExecutionStep,
+    secondStep: ExecutionStep,
+  ): boolean {
+    return (
+      firstStep.type === secondStep.type &&
+      firstStep.target === secondStep.target
+    );
   }
 }

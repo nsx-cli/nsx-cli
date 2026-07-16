@@ -1,18 +1,20 @@
-import { Command } from "commander";
-import { PluginManager } from "../core/plugin/plugin-manager";
+import { Command } from 'commander';
+import { PluginManager } from '../core/plugin/plugin-manager';
 
 export class PluginCommand {
   constructor(private readonly pluginManager: PluginManager) {}
 
   public register(program: Command): void {
-    const plugins = program.command("plugins").description("Gerenciamento de plugins do CLI");
+    const plugins = program
+      .command('plugins')
+      .description('Gerenciamento de plugins do CLI');
 
     plugins
-      .command("list")
-      .description("Lista plugins carregados, falhos e ignorados")
+      .command('list')
+      .description('Lista plugins carregados, falhos e ignorados')
       .action(() => {
         if (!this.pluginManager.isInitialized()) {
-          console.log("Plugin system ainda não foi inicializado.");
+          console.log('Plugin system ainda não foi inicializado.');
           return;
         }
 
@@ -23,7 +25,9 @@ export class PluginCommand {
         console.log(`Plugins carregados: ${loaded.length}`);
 
         for (const plugin of loaded) {
-          console.log(`  ✔ ${plugin.definition.name} (${plugin.descriptor.modulePath})`);
+          console.log(
+            `  ✔ ${plugin.definition.name} (${plugin.descriptor.modulePath})`,
+          );
         }
 
         console.log(`Plugins com falha: ${failed.length}`);

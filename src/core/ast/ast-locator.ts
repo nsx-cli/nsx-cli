@@ -1,5 +1,5 @@
-import { ClassDeclaration, Decorator, Node, SourceFile } from "ts-morph";
-import { AstProjectContext } from "./ast-project-context";
+import { ClassDeclaration, Decorator, Node, SourceFile } from 'ts-morph';
+import { AstProjectContext } from './ast-project-context';
 
 export interface FindSourceFileOptions {
   filePath: string;
@@ -23,7 +23,9 @@ export interface FindModuleOptions {
 export class AstLocator {
   constructor(private readonly projectContext: AstProjectContext) {}
 
-  public findSourceFile(options: FindSourceFileOptions): SourceFile | undefined {
+  public findSourceFile(
+    options: FindSourceFileOptions,
+  ): SourceFile | undefined {
     return this.projectContext.getSourceFile(options.filePath);
   }
 
@@ -37,7 +39,8 @@ export class AstLocator {
     }
 
     return options.target.getFirstDescendant(
-      (entry) => Node.isDecorator(entry) && entry.getName() === options.decoratorName
+      (entry) =>
+        Node.isDecorator(entry) && entry.getName() === options.decoratorName,
     ) as Decorator | undefined;
   }
 
@@ -45,13 +48,16 @@ export class AstLocator {
     if (options.className !== undefined) {
       const classDeclaration = options.sourceFile.getClass(options.className);
 
-      if (classDeclaration?.getDecorator("Module") !== undefined) {
+      if (classDeclaration?.getDecorator('Module') !== undefined) {
         return classDeclaration;
       }
     }
 
     return options.sourceFile
       .getClasses()
-      .find((classDeclaration) => classDeclaration.getDecorator("Module") !== undefined);
+      .find(
+        (classDeclaration) =>
+          classDeclaration.getDecorator('Module') !== undefined,
+      );
   }
 }

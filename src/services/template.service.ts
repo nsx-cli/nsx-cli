@@ -1,13 +1,17 @@
-import { TemplateCache } from "./template-cache.service";
-import { TemplateLoader } from "./template-loader.service";
-import { TemplateRenderer } from "./template-renderer.service";
+import { TemplateCache } from './template-cache.service';
+import { TemplateLoader } from './template-loader.service';
+import { TemplateRenderer } from './template-renderer.service';
 
 export class TemplateService {
   private readonly loader = new TemplateLoader();
   private readonly renderer = new TemplateRenderer();
   private readonly cache = new TemplateCache();
+  private readonly loader = new TemplateLoader();
 
-  async render(templateName: string, data: Record<string, unknown>): Promise<string> {
+  async render(
+    templateName: string,
+    data: Record<string, unknown>,
+  ): Promise<string> {
     if (this.cache.has(templateName)) {
       return this.renderer.render(this.cache.get(templateName)!, data);
     }

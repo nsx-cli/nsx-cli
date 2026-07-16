@@ -1,14 +1,14 @@
-import { describe, expect, it } from "vitest";
-import { AnalyzeFormatter } from "./analyze-formatter";
-import { AnalyzeReport } from "./analyze.types";
+import { describe, expect, it } from 'vitest';
+import { AnalyzeFormatter } from './analyze-formatter';
+import { AnalyzeReport } from './analyze.types';
 
-describe("AnalyzeFormatter", () => {
-  it("formata markdown e resumo de console", () => {
+describe('AnalyzeFormatter', () => {
+  it('formata markdown e resumo de console', () => {
     const formatter = new AnalyzeFormatter();
     const report: AnalyzeReport = {
-      generatedAt: "2026-07-14T00:00:00.000Z",
+      generatedAt: '2026-07-14T00:00:00.000Z',
       project: {
-        rootDir: "c:/workspace",
+        rootDir: 'c:/workspace',
         packageJsonPath: null,
         tsconfigPath: null,
         nestCliPath: null,
@@ -21,9 +21,9 @@ describe("AnalyzeFormatter", () => {
       },
       sections: [
         {
-          name: "Complexidade",
-          status: "info",
-          summary: "ok",
+          name: 'Complexidade',
+          status: 'info',
+          summary: 'ok',
           issues: [],
         },
       ],
@@ -36,11 +36,14 @@ describe("AnalyzeFormatter", () => {
       },
     };
 
-    const markdown = formatter.format(report, "c:/workspace/.nsx/analyze-report.md");
+    const markdown = formatter.format(
+      report,
+      'c:/workspace/.nsx/analyze-report.md',
+    );
     const summary = formatter.formatConsoleSummary(report);
 
-    expect(markdown).toContain("# NSX Analyze Report");
-    expect(markdown).toContain("Average complexity");
-    expect(summary).toContain("NSX Analyze OK");
+    expect(markdown).toContain('# NSX Analyze Report');
+    expect(markdown).toContain('Average complexity');
+    expect(summary).toContain('NSX Analyze OK');
   });
 });

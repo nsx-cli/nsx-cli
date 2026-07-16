@@ -1,12 +1,12 @@
-import { Command } from "commander";
-import { describe, expect, it, vi } from "vitest";
-import { FixCommand } from "./fix.command";
+import { Command } from 'commander';
+import { describe, expect, it, vi } from 'vitest';
+import { FixCommand } from './fix.command';
 
-describe("FixCommand", () => {
-  it("executa fix e imprime preview + relatório", async () => {
+describe('FixCommand', () => {
+  it('executa fix e imprime preview + relatório', async () => {
     const runMock = vi.fn().mockResolvedValue({
-      preview: "NSX Fix Preview | Operações planejadas: 2",
-      outputPath: "c:/workspace/.nsx/fix-report.md",
+      preview: 'NSX Fix Preview | Operações planejadas: 2',
+      outputPath: 'c:/workspace/.nsx/fix-report.md',
       report: {
         summary: {
           totalPlannedOperations: 2,
@@ -34,18 +34,23 @@ describe("FixCommand", () => {
 
     const command = new FixCommand(fixEngine as never);
     const program = new Command();
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     program.exitOverride();
 
     command.register(program);
 
-    await program.parseAsync(["fix", "--dry-run", "--output", "c:/workspace/fix.md"], { from: "user" });
+    await program.parseAsync(
+      ['fix', '--dry-run', '--output', 'c:/workspace/fix.md'],
+      { from: 'user' },
+    );
 
     expect(runMock).toHaveBeenCalledWith({
       dryRun: true,
-      outputPath: "c:/workspace/fix.md",
+      outputPath: 'c:/workspace/fix.md',
     });
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Relatório salvo em"));
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Relatório salvo em'),
+    );
 
     logSpy.mockRestore();
   });

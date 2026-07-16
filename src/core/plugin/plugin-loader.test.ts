@@ -1,71 +1,74 @@
-import { Command } from "commander";
-import { describe, expect, it } from "vitest";
-import { ApplicationContext } from "../application/application-context";
-import { GeneratorRegistry } from "../generator/generator.registry";
-import { PluginLoader } from "./plugin-loader";
-import { PluginContext } from "./plugin.types";
+import { Command } from 'commander';
+import { describe, expect, it } from 'vitest';
+import { ApplicationContext } from '../application/application-context';
+import { GeneratorRegistry } from '../generator/generator.registry';
+import { PluginLoader } from './plugin-loader';
+import { PluginContext } from './plugin.types';
 
-describe("PluginLoader", () => {
-  it("carrega plugin via factory e executa hooks de lifecycle", async () => {
+describe('PluginLoader', () => {
+  it('carrega plugin via factory e executa hooks de lifecycle', async () => {
     const events: string[] = [];
 
     const importer = async () => ({
       default: (options: Record<string, unknown>) => ({
-        name: "test-plugin",
+        name: 'test-plugin',
         register: () => {
           events.push(`register:${options.mode}`);
         },
         activate: () => {
-          events.push("activate");
+          events.push('activate');
         },
       }),
     });
 
-    const loader = new PluginLoader(process.cwd(), importer as never);
+    const loader = new PluginLoader(process.cwd(), importer);
     const generatorRegistry = new GeneratorRegistry();
     const context: PluginContext = {
       program: new Command(),
       applicationContext: new ApplicationContext(),
       generatorRegistry,
       rootDir: process.cwd(),
-      options: { mode: "strict" },
+      options: { mode: 'strict' },
       registerGenerator: () => undefined,
       registerService: () => undefined,
       resolveService: () => {
-        throw new Error("service-not-found");
+        throw new Error('service-not-found');
       },
     };
 
     const definition = await loader.load(
       {
-        id: "test-plugin",
-        modulePath: "test-plugin",
-        options: { mode: "strict" },
+        id: 'test-plugin',
+        modulePath: 'test-plugin',
+        options: { mode: 'strict' },
         enabled: true,
-        source: "config",
+        source: 'config',
       },
-      context
+      context,
     );
 
-    expect(definition.name).toBe("test-plugin");
-    expect(events).toEqual(["register:strict", "activate"]);
+    expect(definition.name).toBe('test-plugin');
+    expect(events).toEqual(['register:strict', 'activate']);
   });
 
-  it("resolve caminhos relativos para file URLs", async () => {
+  it('resolve caminhos relativos para file URLs', async () => {
     const importer = async () => ({
       default: {
-        name: "relative-plugin",
+        name: 'relative-plugin',
       },
     });
 
-    const loader = new PluginLoader("C:/Projetos/NSX-Vagas-Plus/backend/tools/nsx-cli", importer as never);
+    const loader = new PluginLoader(
+      'C:/Projetos/NSX-Vagas-Plus/backend/tools/nsx-cli',
+      importer,
+    );
 
     const definition = await loader.load(
       {
-        id: "relative-plugin",
-        modulePath: "./plugins/relative-plugin.js",
+        id: 'relative-plugin',
+        modulePath: './plugins/relative-plugin.js',
         enabled: true,
-        source: "config",
+        source: 'config',
       },
       {
         program: new Command(),
@@ -76,11 +79,11 @@ describe("PluginLoader", () => {
         registerGenerator: () => undefined,
         registerService: () => undefined,
         resolveService: () => {
-          throw new Error("not used");
+          throw new Error('not used');
         },
-      }
+      },
     );
 
-    expect(definition.name).toBe("relative-plugin");
+    expect(definition.name).toBe('relative-plugin');
   });
 });

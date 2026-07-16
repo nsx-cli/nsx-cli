@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { AnalyzeService } from "./analyze.service";
+import { describe, expect, it } from 'vitest';
+import { AnalyzeService } from './analyze.service';
 
-describe("AnalyzeService", () => {
-  it("gera relatório de análise", async () => {
+describe('AnalyzeService', () => {
+  it('gera relatório de análise', async () => {
     const scanner = {
       scan: async () => ({
-        rootDir: "c:/repo",
+        rootDir: 'c:/repo',
         packageJsonPath: null,
         tsconfigPath: null,
         nestCliPath: null,
@@ -20,9 +20,9 @@ describe("AnalyzeService", () => {
 
     const analyzer = {
       analyze: async () => ({
-        generatedAt: "2026-07-14T00:00:00.000Z",
+        generatedAt: '2026-07-14T00:00:00.000Z',
         project: {
-          rootDir: "c:/repo",
+          rootDir: 'c:/repo',
           packageJsonPath: null,
           tsconfigPath: null,
           nestCliPath: null,
@@ -45,7 +45,7 @@ describe("AnalyzeService", () => {
     };
 
     const formatter = {
-      format: () => "# analyze",
+      format: () => '# analyze',
     };
 
     const fileService = {
@@ -54,10 +54,17 @@ describe("AnalyzeService", () => {
       writeFile: async () => undefined,
     };
 
-    const service = new AnalyzeService(scanner as never, analyzer as never, formatter as never, fileService as never);
-    const result = await service.run({ outputPath: "c:/repo/.nsx/analyze-report.md" });
+    const service = new AnalyzeService(
+      scanner as never,
+      analyzer as never,
+      formatter as never,
+      fileService as never,
+    );
+    const result = await service.run({
+      outputPath: 'c:/repo/.nsx/analyze-report.md',
+    });
 
-    expect(result.outputPath).toBe("c:/repo/.nsx/analyze-report.md");
-    expect(result.markdown).toBe("# analyze");
+    expect(result.outputPath).toBe('c:/repo/.nsx/analyze-report.md');
+    expect(result.markdown).toBe('# analyze');
   });
 });

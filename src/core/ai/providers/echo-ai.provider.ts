@@ -1,7 +1,7 @@
-import { AiProvider, AiProviderRequest, AiResponse } from "../ai.types";
+import { AiProvider, AiProviderRequest, AiResponse } from '../ai.types';
 
 export class EchoAiProvider implements AiProvider {
-  public readonly name = "echo";
+  public readonly name = 'echo';
 
   public async generate(request: AiProviderRequest): Promise<AiResponse> {
     return {

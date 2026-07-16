@@ -1,13 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { DocumentationService } from "./documentation.service";
+import { describe, expect, it } from 'vitest';
+import { DocumentationService } from './documentation.service';
 
-describe("DocumentationService", () => {
-  it("gera markdown e grava arquivo de saída", async () => {
+describe('DocumentationService', () => {
+  it('gera markdown e grava arquivo de saída', async () => {
     const collector = {
       collect: async () => ({
-        generatedAt: "2026-07-14T00:00:00.000Z",
+        generatedAt: '2026-07-14T00:00:00.000Z',
         project: {
-          rootDir: "c:/repo",
+          rootDir: 'c:/repo',
           packageJsonPath: null,
           tsconfigPath: null,
           nestCliPath: null,
@@ -38,7 +38,7 @@ describe("DocumentationService", () => {
     };
 
     const formatter = {
-      format: () => "# docs",
+      format: () => '# docs',
     };
 
     const fileService = {
@@ -46,10 +46,14 @@ describe("DocumentationService", () => {
       writeFile: async () => undefined,
     };
 
-    const service = new DocumentationService(collector as never, formatter as never, fileService as never);
-    const result = await service.generate({ outputPath: "c:/repo/docs.md" });
+    const service = new DocumentationService(
+      collector as never,
+      formatter as never,
+      fileService as never,
+    );
+    const result = await service.generate({ outputPath: 'c:/repo/docs.md' });
 
-    expect(result.outputPath).toBe("c:/repo/docs.md");
-    expect(result.markdown).toBe("# docs");
+    expect(result.outputPath).toBe('c:/repo/docs.md');
+    expect(result.markdown).toBe('# docs');
   });
 });

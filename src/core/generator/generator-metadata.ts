@@ -6,24 +6,24 @@ export interface GeneratorMetadata {
   aliases: string[];
 }
 
-export const GENERATOR_FILE_SUFFIX = ".generator";
+export const GENERATOR_FILE_SUFFIX = '.generator';
 
 export function normalizeGeneratorType(value: string): string {
   return value.trim().toLowerCase();
 }
 
 export function deriveGeneratorTypeFromFilePath(filePath: string): string {
-  const normalizedPath = filePath.replace(/\\/g, "/");
-  const fileName = normalizedPath.split("/").pop() ?? "";
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  const fileName = normalizedPath.split('/').pop() ?? '';
 
   if (!fileName) {
-    return "";
+    return '';
   }
 
   return normalizeGeneratorType(
     fileName
-      .replace(/\.(ts|js)$/i, "")
-      .replace(new RegExp(`${GENERATOR_FILE_SUFFIX}$`, "i"), "")
+      .replace(/\.(ts|js)$/i, '')
+      .replace(new RegExp(`${GENERATOR_FILE_SUFFIX}$`, 'i'), ''),
   );
 }
 

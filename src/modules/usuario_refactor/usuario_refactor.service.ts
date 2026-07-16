@@ -1,5 +1,5 @@
 export class UsuarioRefactorService {
   findAll() {
-    return "UsuarioRefactorService";
+    return 'UsuarioRefactorService';
   }
 }

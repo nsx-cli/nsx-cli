@@ -1,7 +1,7 @@
-import { Command } from "commander";
-import { describe, expect, it, vi } from "vitest";
-import { GeneratorRegistry } from "../core/generator/generator.registry";
-import { MakeCommand } from "./make.command";
+import { Command } from 'commander';
+import { describe, expect, it, vi } from 'vitest';
+import { GeneratorRegistry } from '../core/generator/generator.registry';
+import { MakeCommand } from './make.command';
 
 function createRegistry() {
   const registry = new GeneratorRegistry();
@@ -9,10 +9,10 @@ function createRegistry() {
 
   registry.register({
     metadata: {
-      type: "resource",
-      description: "Generate full resource",
-      category: "scaffold",
-      version: "1.0.0",
+      type: 'resource',
+      description: 'Generate full resource',
+      category: 'scaffold',
+      version: '1.0.0',
       aliases: [],
     },
     generate: generateMock,
@@ -24,28 +24,28 @@ function createRegistry() {
   };
 }
 
-describe("MakeCommand", () => {
-  it("executa make api via generator resource", async () => {
+describe('MakeCommand', () => {
+  it('executa make api via generator resource', async () => {
     const { registry, generateMock } = createRegistry();
     const program = new Command();
     program.exitOverride();
 
     new MakeCommand(registry).register(program);
 
-    await program.parseAsync(["make", "api", "usuario"], { from: "user" });
+    await program.parseAsync(['make', 'api', 'usuario'], { from: 'user' });
 
-    expect(generateMock).toHaveBeenCalledWith("usuario");
+    expect(generateMock).toHaveBeenCalledWith('usuario');
   });
 
-  it("executa make resource via generator resource", async () => {
+  it('executa make resource via generator resource', async () => {
     const { registry, generateMock } = createRegistry();
     const program = new Command();
     program.exitOverride();
 
     new MakeCommand(registry).register(program);
 
-    await program.parseAsync(["make", "resource", "cliente"], { from: "user" });
+    await program.parseAsync(['make', 'resource', 'cliente'], { from: 'user' });
 
-    expect(generateMock).toHaveBeenCalledWith("cliente");
+    expect(generateMock).toHaveBeenCalledWith('cliente');
   });
 });

@@ -1,4 +1,4 @@
-import { Directory, Project, SourceFile } from "ts-morph";
+import { Directory, Project, SourceFile } from 'ts-morph';
 
 export interface OpenProjectOptions {
   tsConfigFilePath: string;
@@ -19,7 +19,7 @@ export class AstProjectContext {
 
   public getProject(): Project {
     if (this.project === undefined) {
-      throw new Error("Project is not initialized");
+      throw new Error('Project is not initialized');
     }
 
     return this.project;

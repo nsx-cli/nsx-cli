@@ -1,14 +1,14 @@
-import { describe, expect, it } from "vitest";
-import { DocumentationFormatter } from "./documentation-formatter";
+import { describe, expect, it } from 'vitest';
+import { DocumentationFormatter } from './documentation-formatter';
 
-describe("DocumentationFormatter", () => {
-  it("gera markdown com seções principais", () => {
+describe('DocumentationFormatter', () => {
+  it('gera markdown com seções principais', () => {
     const formatter = new DocumentationFormatter();
     const markdown = formatter.format(
       {
-        generatedAt: "2026-07-14T00:00:00.000Z",
+        generatedAt: '2026-07-14T00:00:00.000Z',
         project: {
-          rootDir: "c:/repo",
+          rootDir: 'c:/repo',
           packageJsonPath: null,
           tsconfigPath: null,
           nestCliPath: null,
@@ -30,25 +30,25 @@ describe("DocumentationFormatter", () => {
         },
         routes: [
           {
-            controller: "UsersController",
-            filePath: "c:/repo/src/users.controller.ts",
-            basePath: "users",
+            controller: 'UsersController',
+            filePath: 'c:/repo/src/users.controller.ts',
+            basePath: 'users',
           },
         ],
         prisma: {
           enabled: true,
-          schemaPath: "c:/repo/prisma/schema.prisma",
-          models: ["User"],
-          enums: ["Role"],
+          schemaPath: 'c:/repo/prisma/schema.prisma',
+          models: ['User'],
+          enums: ['Role'],
           errors: [],
         },
       },
-      "c:/repo/.nsx/documentation.md"
+      'c:/repo/.nsx/documentation.md',
     );
 
-    expect(markdown).toContain("# NSX Project Documentation");
-    expect(markdown).toContain("## Structure");
-    expect(markdown).toContain("UsersController");
-    expect(markdown).toContain("Prisma");
+    expect(markdown).toContain('# NSX Project Documentation');
+    expect(markdown).toContain('## Structure');
+    expect(markdown).toContain('UsersController');
+    expect(markdown).toContain('Prisma');
   });
 });

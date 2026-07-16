@@ -1,7 +1,7 @@
-import { ExecutionStep } from "../execution-step";
-import { ExecutionStepType } from "../execution-step-type";
-import { ExecutionStepExecutor } from "../execution-step-executor";
-import { IGenerator } from "../../../core/generator/igenerator";
+import { ExecutionStep } from '../execution-step';
+import { ExecutionStepType } from '../execution-step-type';
+import { ExecutionStepExecutor } from '../execution-step-executor';
+import { IGenerator } from '../../../core/generator/igenerator';
 
 export class CreateEntityExecutor implements ExecutionStepExecutor {
   constructor(private readonly generator: IGenerator) {}

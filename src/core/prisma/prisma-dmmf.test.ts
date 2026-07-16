@@ -1,10 +1,10 @@
-import type { DMMF } from "@prisma/generator-helper";
-import { getDMMF } from "@prisma/internals";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { DmmfGenerationException } from "./exceptions/dmmf-generation.exception";
-import { PrismaDmmf } from "./prisma-dmmf";
+import type { DMMF } from '@prisma/generator-helper';
+import { getDMMF } from '@prisma/internals';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { DmmfGenerationException } from './exceptions/dmmf-generation.exception';
+import { PrismaDmmf } from './prisma-dmmf';
 
-vi.mock("@prisma/internals", () => ({
+vi.mock('@prisma/internals', () => ({
   getDMMF: vi.fn(),
 }));
 
@@ -37,12 +37,12 @@ function createDocument(overrides: Partial<DMMF.Document> = {}): DMMF.Document {
   } as DMMF.Document;
 }
 
-describe("PrismaDmmf", () => {
+describe('PrismaDmmf', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it("gera DMMF a partir de um schema valido", async () => {
+  it('gera DMMF a partir de um schema valido', async () => {
     const schema = `
       datasource db {
         provider = "sqlite"
@@ -64,17 +64,19 @@ describe("PrismaDmmf", () => {
     expect(result).toBe(document);
   });
 
-  it("lanca DmmfGenerationException quando o schema e invalido", async () => {
+  it('lanca DmmfGenerationException quando o schema e invalido', async () => {
     const schema = `model User { id Int`;
 
-    getDmmfMock.mockRejectedValueOnce(new Error("Invalid schema"));
+    getDmmfMock.mockRejectedValueOnce(new Error('Invalid schema'));
 
     const prismaDmmf = new PrismaDmmf();
 
-    await expect(prismaDmmf.generate(schema)).rejects.toBeInstanceOf(DmmfGenerationException);
+    await expect(prismaDmmf.generate(schema)).rejects.toBeInstanceOf(
+      DmmfGenerationException,
+    );
   });
 
-  it("preserva um model simples no documento retornado", async () => {
+  it('preserva um model simples no documento retornado', async () => {
     const schema = `
       model User {
         id Int @id
@@ -85,7 +87,7 @@ describe("PrismaDmmf", () => {
       datamodel: {
         models: [
           {
-            name: "User",
+            name: 'User',
             dbName: null,
             schema: null,
             fields: [],
@@ -108,10 +110,10 @@ describe("PrismaDmmf", () => {
     const result = await prismaDmmf.generate(schema);
 
     expect(result.datamodel.models).toHaveLength(1);
-    expect(result.datamodel.models[0].name).toBe("User");
+    expect(result.datamodel.models[0].name).toBe('User');
   });
 
-  it("preserva um model com relacionamento no documento retornado", async () => {
+  it('preserva um model com relacionamento no documento retornado', async () => {
     const schema = `
       model User {
         id Int @id
@@ -128,14 +130,14 @@ describe("PrismaDmmf", () => {
       datamodel: {
         models: [
           {
-            name: "User",
+            name: 'User',
             dbName: null,
             schema: null,
             fields: [
               {
-                name: "posts",
-                kind: "object",
-                type: "Post",
+                name: 'posts',
+                kind: 'object',
+                type: 'Post',
                 isList: true,
                 isRequired: true,
                 isUnique: false,
@@ -143,7 +145,7 @@ describe("PrismaDmmf", () => {
                 isReadOnly: false,
                 isGenerated: false,
                 hasDefaultValue: false,
-                relationName: "PostToUser",
+                relationName: 'PostToUser',
                 relationFromFields: [],
                 relationToFields: [],
                 relationOnDelete: undefined,
@@ -158,7 +160,7 @@ describe("PrismaDmmf", () => {
             documentation: undefined,
           },
           {
-            name: "Post",
+            name: 'Post',
             dbName: null,
             schema: null,
             fields: [],
@@ -181,10 +183,12 @@ describe("PrismaDmmf", () => {
     const result = await prismaDmmf.generate(schema);
 
     expect(result.datamodel.models).toHaveLength(2);
-    expect(result.datamodel.models[0].fields[0].relationName).toBe("PostToUser");
+    expect(result.datamodel.models[0].fields[0].relationName).toBe(
+      'PostToUser',
+    );
   });
 
-  it("preserva enums no documento retornado", async () => {
+  it('preserva enums no documento retornado', async () => {
     const schema = `
       enum Role {
         USER
@@ -196,14 +200,14 @@ describe("PrismaDmmf", () => {
         models: [],
         enums: [
           {
-            name: "Role",
+            name: 'Role',
             values: [
               {
-                name: "USER",
+                name: 'USER',
                 dbName: null,
               },
               {
-                name: "ADMIN",
+                name: 'ADMIN',
                 dbName: null,
               },
             ],
@@ -222,6 +226,6 @@ describe("PrismaDmmf", () => {
     const result = await prismaDmmf.generate(schema);
 
     expect(result.datamodel.enums).toHaveLength(1);
-    expect(result.datamodel.enums[0].name).toBe("Role");
+    expect(result.datamodel.enums[0].name).toBe('Role');
   });
 });

@@ -1,7 +1,11 @@
-import path from "path";
-import { ConfigService, NsxConfig } from "../../config/config.service";
-import { FileService } from "../../services/file.service";
-import { PluginConfigEntry, PluginConfigShape, PluginDescriptor } from "./plugin.types";
+import path from 'path';
+import { ConfigService, NsxConfig } from '../../config/config.service';
+import { FileService } from '../../services/file.service';
+import {
+  PluginConfigEntry,
+  PluginConfigShape,
+  PluginDescriptor,
+} from './plugin.types';
 
 interface PackageJsonNsxShape {
   nsx?: PluginConfigShape;
@@ -9,9 +13,11 @@ interface PackageJsonNsxShape {
 
 export class PluginConfigResolver {
   constructor(
-    private readonly configService: ConfigService = new ConfigService(process.cwd()),
+    private readonly configService: ConfigService = new ConfigService(
+      process.cwd(),
+    ),
     private readonly fileService: FileService = new FileService(),
-    private readonly rootDir: string = process.cwd()
+    private readonly rootDir: string = process.cwd(),
   ) {}
 
   public async resolve(): Promise<PluginDescriptor[]> {
@@ -32,23 +38,28 @@ export class PluginConfigResolver {
 
   private async resolveFromConfig(): Promise<PluginDescriptor[]> {
     const config = await this.configService.load();
-    return this.normalizeEntries((config as NsxConfig & PluginConfigShape).plugins, "config");
+    return this.normalizeEntries(
+      (config as NsxConfig & PluginConfigShape).plugins,
+      'config',
+    );
   }
 
   private async resolveFromPackageJson(): Promise<PluginDescriptor[]> {
-    const packageJsonPath = path.resolve(this.rootDir, "package.json");
+    const packageJsonPath = path.resolve(this.rootDir, 'package.json');
 
     if (!(await this.fileService.exists(packageJsonPath))) {
       return [];
     }
 
-    const packageJson = (await this.fileService.readJson(packageJsonPath)) as PackageJsonNsxShape;
-    return this.normalizeEntries(packageJson.nsx?.plugins, "package");
+    const packageJson = (await this.fileService.readJson(
+      packageJsonPath,
+    )) as PackageJsonNsxShape;
+    return this.normalizeEntries(packageJson.nsx?.plugins, 'package');
   }
 
   private normalizeEntries(
     entries: Array<string | PluginConfigEntry> | undefined,
-    source: PluginDescriptor["source"]
+    source: PluginDescriptor['source'],
   ): PluginDescriptor[] {
     if (!entries || entries.length === 0) {
       return [];
@@ -57,7 +68,7 @@ export class PluginConfigResolver {
     const descriptors: PluginDescriptor[] = [];
 
     for (const entry of entries) {
-      if (typeof entry === "string") {
+      if (typeof entry === 'string') {
         descriptors.push({
           id: entry,
           modulePath: entry,

@@ -1,14 +1,27 @@
-import { copy, ensureDir, ensureFile, pathExists, readFile, remove, rename, writeFile, readdir, glob, readJson, writeJson } from "fs-extra";
-import path from "path";
+import {
+  copy,
+  ensureDir,
+  ensureFile,
+  pathExists,
+  readFile,
+  remove,
+  rename,
+  writeFile,
+  readdir,
+  glob,
+  readJson,
+  writeJson,
+} from 'fs-extra';
+import path from 'path';
 
 export class FileSystem {
   async read(filePath: string): Promise<string> {
-    return readFile(filePath, "utf8");
+    return readFile(filePath, 'utf8');
   }
 
   async write(filePath: string, content: string): Promise<void> {
     await ensureFile(filePath);
-    await writeFile(filePath, content, "utf8");
+    await writeFile(filePath, content, 'utf8');
   }
 
   async exists(filePath: string): Promise<boolean> {

@@ -1,5 +1,5 @@
 export class AstproviderdemoController {
   findAll() {
-    return "AstproviderdemoController";
+    return 'AstproviderdemoController';
   }
 }

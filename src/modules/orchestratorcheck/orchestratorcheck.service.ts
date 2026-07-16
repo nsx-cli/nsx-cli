@@ -1,5 +1,5 @@
 export class OrchestratorcheckService {
   findAll() {
-    return "OrchestratorcheckService";
+    return 'OrchestratorcheckService';
   }
 }

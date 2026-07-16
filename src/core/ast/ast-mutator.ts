@@ -1,6 +1,9 @@
-import { ImportDeclaration, SourceFile } from "ts-morph";
-import { AstImportPlanner } from "./ast-import-planner";
-import { ensureArrayProperty, resolveModuleMetadataObject } from "./operations/module-metadata.operation-utils";
+import { ImportDeclaration, SourceFile } from 'ts-morph';
+import { AstImportPlanner } from './ast-import-planner';
+import {
+  ensureArrayProperty,
+  resolveModuleMetadataObject,
+} from './operations/module-metadata.operation-utils';
 
 export interface AddImportOptions {
   sourceFile: SourceFile;
@@ -24,16 +27,21 @@ export class AstMutator {
 
   public addImport(options: AddImportOptions): ImportDeclaration {
     const existing = options.sourceFile.getImportDeclaration(
-      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier
+      (entry) => entry.getModuleSpecifierValue() === options.moduleSpecifier,
     );
 
     if (existing !== undefined) {
-      if (options.defaultImport !== undefined && existing.getDefaultImport() === undefined) {
+      if (
+        options.defaultImport !== undefined &&
+        existing.getDefaultImport() === undefined
+      ) {
         existing.setDefaultImport(options.defaultImport);
       }
 
       if (options.namedImport !== undefined) {
-        const hasNamedImport = existing.getNamedImports().some((entry) => entry.getName() === options.namedImport);
+        const hasNamedImport = existing
+          .getNamedImports()
+          .some((entry) => entry.getName() === options.namedImport);
 
         if (!hasNamedImport) {
           existing.addNamedImport(options.namedImport);
@@ -69,9 +77,13 @@ export class AstMutator {
   }
 
   public addProvider(options: AddProviderOptions): void {
-    const metadataObject = resolveModuleMetadataObject(options.moduleSourceFile);
-    const providers = ensureArrayProperty(metadataObject, "providers");
-    const exists = providers.getElements().some((entry) => entry.getText().trim() === options.providerName);
+    const metadataObject = resolveModuleMetadataObject(
+      options.moduleSourceFile,
+    );
+    const providers = ensureArrayProperty(metadataObject, 'providers');
+    const exists = providers
+      .getElements()
+      .some((entry) => entry.getText().trim() === options.providerName);
 
     if (!exists) {
       providers.addElement(options.providerName);
@@ -79,9 +91,13 @@ export class AstMutator {
   }
 
   public addController(options: AddControllerOptions): void {
-    const metadataObject = resolveModuleMetadataObject(options.moduleSourceFile);
-    const controllers = ensureArrayProperty(metadataObject, "controllers");
-    const exists = controllers.getElements().some((entry) => entry.getText().trim() === options.controllerName);
+    const metadataObject = resolveModuleMetadataObject(
+      options.moduleSourceFile,
+    );
+    const controllers = ensureArrayProperty(metadataObject, 'controllers');
+    const exists = controllers
+      .getElements()
+      .some((entry) => entry.getText().trim() === options.controllerName);
 
     if (!exists) {
       controllers.addElement(options.controllerName);

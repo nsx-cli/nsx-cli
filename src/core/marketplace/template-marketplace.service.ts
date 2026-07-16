@@ -1,5 +1,5 @@
-import path from "path";
-import { FileService } from "../../services/file.service";
+import path from 'path';
+import { FileService } from '../../services/file.service';
 import {
   InstalledMarketplacePack,
   InstalledMarketplaceTemplate,
@@ -10,7 +10,7 @@ import {
   MarketplaceManifest,
   MarketplaceSearchResult,
   MarketplaceTemplatePack,
-} from "./marketplace.types";
+} from './marketplace.types';
 
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
@@ -25,9 +25,15 @@ export class TemplateMarketplaceService {
     private readonly rootDir: string = process.cwd(),
     private readonly fileService: FileService = new FileService(),
     private readonly fetchClient: FetchLike = fetch,
-    private readonly defaultCatalogUrl: string = process.env.NSX_TEMPLATE_MARKETPLACE_URL ?? "https://raw.githubusercontent.com/nsx-platform/nsx-cli/main/marketplace/catalog.json"
+    private readonly defaultCatalogUrl: string = process.env
+      .NSX_TEMPLATE_MARKETPLACE_URL ??
+      'https://raw.githubusercontent.com/nsx-platform/nsx-cli/main/marketplace/catalog.json',
   ) {
-    this.manifestPath = path.resolve(this.rootDir, ".nsx", "template-marketplace.json");
+    this.manifestPath = path.resolve(
+      this.rootDir,
+      '.nsx',
+      'template-marketplace.json',
+    );
   }
 
   public async list(catalogUrl?: string): Promise<MarketplaceListResult> {
@@ -40,13 +46,23 @@ export class TemplateMarketplaceService {
     };
   }
 
-  public async search(query: string, catalogUrl?: string): Promise<MarketplaceSearchResult> {
+  public async search(
+    query: string,
+    catalogUrl?: string,
+  ): Promise<MarketplaceSearchResult> {
     const normalizedQuery = query.trim().toLowerCase();
     const list = await this.list(catalogUrl);
 
     const packs = list.packs.filter((pack) => {
-      const haystack = [pack.id, pack.name, pack.description, pack.version, ...pack.tags, ...pack.templates.map((template) => template.name)]
-        .join(" ")
+      const haystack = [
+        pack.id,
+        pack.name,
+        pack.description,
+        pack.version,
+        ...pack.tags,
+        ...pack.templates.map((template) => template.name),
+      ]
+        .join(' ')
         .toLowerCase();
 
       return haystack.includes(normalizedQuery);
@@ -59,7 +75,10 @@ export class TemplateMarketplaceService {
     };
   }
 
-  public async install(packId: string, options: MarketplaceInstallOptions = {}): Promise<MarketplaceInstallResult> {
+  public async install(
+    packId: string,
+    options: MarketplaceInstallOptions = {},
+  ): Promise<MarketplaceInstallResult> {
     const catalogUrl = this.resolveCatalogUrl(options.catalogUrl);
     const catalog = await this.fetchCatalog(catalogUrl);
     const pack = catalog.packs.find((entry) => entry.id === packId);
@@ -70,7 +89,12 @@ export class TemplateMarketplaceService {
 
     const templates = await this.installPackTemplates(pack, catalogUrl);
     const manifest = await this.readManifest();
-    const updatedManifest = this.mergeManifest(manifest, catalogUrl, pack, templates);
+    const updatedManifest = this.mergeManifest(
+      manifest,
+      catalogUrl,
+      pack,
+      templates,
+    );
 
     await this.fileService.ensureDirectory(path.dirname(this.manifestPath));
     await this.fileService.writeJson(this.manifestPath, updatedManifest);
@@ -108,12 +132,18 @@ export class TemplateMarketplaceService {
     return catalog;
   }
 
-  private async installPackTemplates(pack: MarketplaceTemplatePack, catalogUrl: string): Promise<InstalledMarketplaceTemplate[]> {
-    const packRoot = path.resolve(this.rootDir, ".nsx", "templates", pack.id);
+  private async installPackTemplates(
+    pack: MarketplaceTemplatePack,
+    catalogUrl: string,
+  ): Promise<InstalledMarketplaceTemplate[]> {
+    const packRoot = path.resolve(this.rootDir, '.nsx', 'templates', pack.id);
     const templates: InstalledMarketplaceTemplate[] = [];
 
     for (const template of pack.templates) {
-      const content = await this.downloadTemplateContent(catalogUrl, template.downloadUrl);
+      const content = await this.downloadTemplateContent(
+        catalogUrl,
+        template.downloadUrl,
+      );
       const normalizedName = this.normalizeTemplateName(template.name);
       const filePath = path.resolve(packRoot, `${normalizedName}.hbs`);
 
@@ -130,7 +160,10 @@ export class TemplateMarketplaceService {
     return templates;
   }
 
-  private async downloadTemplateContent(catalogUrl: string, downloadUrl: string): Promise<string> {
+  private async downloadTemplateContent(
+    catalogUrl: string,
+    downloadUrl: string,
+  ): Promise<string> {
     const resolvedUrl = this.resolveTemplateUrl(catalogUrl, downloadUrl);
     const response = await this.fetchClient(resolvedUrl);
 
@@ -149,7 +182,7 @@ export class TemplateMarketplaceService {
     const resolved = catalogUrl ?? this.defaultCatalogUrl;
 
     if (!resolved || resolved.trim().length === 0) {
-      throw new Error("Catálogo de marketplace não configurado.");
+      throw new Error('Catálogo de marketplace não configurado.');
     }
 
     return resolved;
@@ -165,16 +198,20 @@ export class TemplateMarketplaceService {
       };
     }
 
-    return (await this.fileService.readJson(this.manifestPath)) as MarketplaceManifest;
+    return (await this.fileService.readJson(
+      this.manifestPath,
+    )) as MarketplaceManifest;
   }
 
   private mergeManifest(
     manifest: MarketplaceManifest,
     catalogUrl: string,
     pack: MarketplaceTemplatePack,
-    templates: InstalledMarketplaceTemplate[]
+    templates: InstalledMarketplaceTemplate[],
   ): MarketplaceManifest {
-    const filteredPacks = manifest.packs.filter((entry) => entry.id !== pack.id);
+    const filteredPacks = manifest.packs.filter(
+      (entry) => entry.id !== pack.id,
+    );
     const installedPack: InstalledMarketplacePack = {
       id: pack.id,
       name: pack.name,
@@ -198,6 +235,6 @@ export class TemplateMarketplaceService {
   }
 
   private normalizeTemplateName(templateName: string): string {
-    return templateName.replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+    return templateName.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
   }
 }

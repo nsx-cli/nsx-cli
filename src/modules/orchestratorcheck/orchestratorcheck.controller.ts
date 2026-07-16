@@ -1,5 +1,5 @@
 export class OrchestratorcheckController {
   findAll() {
-    return "OrchestratorcheckController";
+    return 'OrchestratorcheckController';
   }
 }

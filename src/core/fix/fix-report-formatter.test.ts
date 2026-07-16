@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
-import { FixReportFormatter } from "./fix-report";
-import type { FixReport } from "./fix-result";
+import { describe, expect, it } from 'vitest';
+import { FixReportFormatter } from './fix-report';
+import type { FixReport } from './fix-result';
 
 function createReport(overrides: Partial<FixReport> = {}): FixReport {
   return {
-    generatedAt: "2026-07-14T00:00:00.000Z",
+    generatedAt: '2026-07-14T00:00:00.000Z',
     project: {
       rootDir: process.cwd(),
       packageJsonPath: null,
@@ -18,7 +18,7 @@ function createReport(overrides: Partial<FixReport> = {}): FixReport {
       usesTypeORM: false,
     },
     analyzeReport: {
-      generatedAt: "2026-07-14T00:00:00.000Z",
+      generatedAt: '2026-07-14T00:00:00.000Z',
       project: {
         rootDir: process.cwd(),
         packageJsonPath: null,
@@ -48,40 +48,44 @@ function createReport(overrides: Partial<FixReport> = {}): FixReport {
     },
     executionPlan: [
       {
-        type: "OrganizeImportsOperation",
-        filePath: "src/a.ts",
-        description: "organize",
+        type: 'OrganizeImportsOperation',
+        filePath: 'src/a.ts',
+        description: 'organize',
       },
     ],
     execution: [
       {
         step: {
-          type: "OrganizeImportsOperation",
-          filePath: "src/a.ts",
-          description: "organize",
+          type: 'OrganizeImportsOperation',
+          filePath: 'src/a.ts',
+          description: 'organize',
         },
-        status: "executed",
+        status: 'executed',
       },
     ],
     ...overrides,
   };
 }
 
-describe("FixReportFormatter", () => {
-  it("formata preview, console e markdown com operações", () => {
+describe('FixReportFormatter', () => {
+  it('formata preview, console e markdown com operações', () => {
     const formatter = new FixReportFormatter();
     const report = createReport();
 
-    expect(formatter.formatPreview(report)).toContain("Operações planejadas: 1");
-    expect(formatter.formatConsoleSummary(report)).toContain("NSX Fix OK (DRY-RUN)");
+    expect(formatter.formatPreview(report)).toContain(
+      'Operações planejadas: 1',
+    );
+    expect(formatter.formatConsoleSummary(report)).toContain(
+      'NSX Fix OK (DRY-RUN)',
+    );
 
-    const markdown = formatter.formatMarkdown(report, "out.md");
-    expect(markdown).toContain("# NSX Fix Report");
-    expect(markdown).toContain("Planned operations: 1");
-    expect(markdown).toContain("EXECUTED");
+    const markdown = formatter.formatMarkdown(report, 'out.md');
+    expect(markdown).toContain('# NSX Fix Report');
+    expect(markdown).toContain('Planned operations: 1');
+    expect(markdown).toContain('EXECUTED');
   });
 
-  it("cobre branches sem operações e com falhas", () => {
+  it('cobre branches sem operações e com falhas', () => {
     const formatter = new FixReportFormatter();
     const report = createReport({
       summary: {
@@ -94,22 +98,26 @@ describe("FixReportFormatter", () => {
       execution: [
         {
           step: {
-            type: "FixModuleExportsOperation",
-            filePath: "src/b.ts",
-            description: "fix",
+            type: 'FixModuleExportsOperation',
+            filePath: 'src/b.ts',
+            description: 'fix',
           },
-          status: "failed",
-          error: "boom",
+          status: 'failed',
+          error: 'boom',
         },
       ],
     });
 
-    expect(formatter.formatPreview(report)).toContain("Nenhuma alteração necessária");
-    expect(formatter.formatConsoleSummary(report)).toContain("NSX Fix WARNING (APPLY)");
+    expect(formatter.formatPreview(report)).toContain(
+      'Nenhuma alteração necessária',
+    );
+    expect(formatter.formatConsoleSummary(report)).toContain(
+      'NSX Fix WARNING (APPLY)',
+    );
 
-    const markdown = formatter.formatMarkdown(report, "out.md");
-    expect(markdown).toContain("No operations planned");
-    expect(markdown).toContain("FAILED");
-    expect(markdown).toContain("boom");
+    const markdown = formatter.formatMarkdown(report, 'out.md');
+    expect(markdown).toContain('No operations planned');
+    expect(markdown).toContain('FAILED');
+    expect(markdown).toContain('boom');
   });
 });

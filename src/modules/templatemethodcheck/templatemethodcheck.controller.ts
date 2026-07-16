@@ -1,5 +1,5 @@
 export class TemplatemethodcheckController {
   findAll() {
-    return "TemplatemethodcheckController";
+    return 'TemplatemethodcheckController';
   }
 }

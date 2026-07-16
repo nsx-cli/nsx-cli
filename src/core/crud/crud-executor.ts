@@ -1,7 +1,10 @@
-import { ExecutionPlan } from "./execution-plan";
-import { CrudExecutionReport, ExecutedStepReport } from "./crud-execution-report";
-import { ExecutionStepExecutor } from "./execution-step-executor";
-import { ExecutionStepExecutorRegistry } from "./execution-step-executor-registry";
+import { ExecutionPlan } from './execution-plan';
+import {
+  CrudExecutionReport,
+  ExecutedStepReport,
+} from './crud-execution-report';
+import { ExecutionStepExecutor } from './execution-step-executor';
+import { ExecutionStepExecutorRegistry } from './execution-step-executor-registry';
 
 export class CrudExecutor {
   private readonly registry: ExecutionStepExecutorRegistry;
@@ -10,7 +13,10 @@ export class CrudExecutor {
     this.registry = new ExecutionStepExecutorRegistry(executors);
   }
 
-  public async execute(plan: ExecutionPlan, modelName = "unknown"): Promise<CrudExecutionReport> {
+  public async execute(
+    plan: ExecutionPlan,
+    modelName = 'unknown',
+  ): Promise<CrudExecutionReport> {
     const startedAt = new Date();
     const executedSteps: ExecutedStepReport[] = [];
 
@@ -25,6 +31,11 @@ export class CrudExecutor {
       executedSteps.push({ step, executorName: executor.constructor.name });
     }
 
-    return new CrudExecutionReport(modelName, startedAt, new Date(), executedSteps);
+    return new CrudExecutionReport(
+      modelName,
+      startedAt,
+      new Date(),
+      executedSteps,
+    );
   }
 }

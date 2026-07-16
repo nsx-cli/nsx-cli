@@ -1,5 +1,9 @@
-import { SourceFile } from "ts-morph";
-import { ensureArrayProperty, ensureNamedImport, resolveModuleMetadataObject } from "./module-metadata.operation-utils";
+import { SourceFile } from 'ts-morph';
+import {
+  ensureArrayProperty,
+  ensureNamedImport,
+  resolveModuleMetadataObject,
+} from './module-metadata.operation-utils';
 
 export interface AddProviderOperationInput {
   sourceFile: SourceFile;
@@ -8,20 +12,18 @@ export interface AddProviderOperationInput {
 }
 
 export class AddProviderOperation {
-  public execute(input: AddProviderOperationInput): void {
-    const metadataObject = resolveModuleMetadataObject(input.sourceFile);
-    const providersArray = ensureArrayProperty(metadataObject, "providers");
-
-    const alreadyExists = providersArray
-      .getElements()
-      .some((element) => element.getText().trim() === input.providerName);
-
-    if (alreadyExists) {
-      ensureNamedImport(input.sourceFile, input.providerName, input.importPath);
-      return;
-    }
-
-    providersArray.addElement(input.providerName);
+  execute(input: AddProviderOperationInput): void {
     ensureNamedImport(input.sourceFile, input.providerName, input.importPath);
+
+    const metadata = resolveModuleMetadataObject(input.sourceFile);
+    const providers = ensureArrayProperty(metadata, 'providers');
+
+    const exists = providers
+      .getElements()
+      .some((e) => e.getText().trim() === input.providerName);
+
+    if (!exists) {
+      providers.addElement(input.providerName);
+    }
   }
 }

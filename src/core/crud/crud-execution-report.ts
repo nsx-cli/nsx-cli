@@ -1,4 +1,4 @@
-import { ExecutionStep } from "./execution-step";
+import { ExecutionStep } from './execution-step';
 
 export interface ExecutedStepReport {
   step: ExecutionStep;
@@ -10,7 +10,7 @@ export class CrudExecutionReport {
     public readonly modelName: string,
     public readonly startedAt: Date,
     public readonly finishedAt: Date,
-    public readonly executedSteps: readonly ExecutedStepReport[]
+    public readonly executedSteps: readonly ExecutedStepReport[],
   ) {}
 
   public get totalSteps(): number {

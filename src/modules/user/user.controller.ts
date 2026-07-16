@@ -1,5 +1,5 @@
 export class UserController {
   findAll() {
-    return "UserController";
+    return 'UserController';
   }
 }

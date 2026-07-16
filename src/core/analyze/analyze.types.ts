@@ -1,6 +1,6 @@
-import type { ProjectScannerResult } from "../../services/project-scanner.service";
+import type { ProjectScannerResult } from '../../services/project-scanner.service';
 
-export type AnalyzeSeverity = "info" | "warning" | "error";
+export type AnalyzeSeverity = 'info' | 'warning' | 'error';
 
 export interface AnalyzeIssue {
   message: string;

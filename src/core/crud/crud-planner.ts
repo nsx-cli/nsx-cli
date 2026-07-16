@@ -1,6 +1,6 @@
-import { PrismaModel } from "../prisma/prisma-model";
-import { ExecutionPlan } from "./execution-plan";
-import { ExecutionStepType } from "./execution-step-type";
+import { PrismaModel } from '../prisma/prisma-model';
+import { ExecutionPlan } from './execution-plan';
+import { ExecutionStepType } from './execution-step-type';
 
 const CRUD_STEP_TYPES = [
   ExecutionStepType.CREATE_MODULE,
