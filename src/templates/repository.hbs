@@ -1,0 +1,26 @@
+﻿import { {{dtoCreate}} } from "./dto/create-{{moduleName}}.dto";
+import { {{dtoUpdate}} } from "./dto/update-{{moduleName}}.dto";
+
+export class {{repositoryName}} {
+
+  async findAll() {
+    return [];
+  }
+
+  async findById(id: string) {
+    return { id };
+  }
+
+  async create(data: {{dtoCreate}}) {
+    return data;
+  }
+
+  async update(id: string, data: {{dtoUpdate}}) {
+    return { id, ...data };
+  }
+
+  async delete(id: string) {
+    return { deleted: true, id };
+  }
+
+}

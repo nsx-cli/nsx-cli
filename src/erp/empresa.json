@@ -1,0 +1,25 @@
+﻿{
+  "name": "Empresa",
+  "table": "empresas",
+  "fields": [
+    { "name": "id", "type": "uuid", "primary": true },
+    { "name": "razaoSocial", "type": "string", "required": true },
+    { "name": "nomeFantasia", "type": "string" },
+    { "name": "cnpj", "type": "string", "unique": true },
+    { "name": "inscricaoEstadual", "type": "string" },
+    { "name": "email", "type": "string" },
+    { "name": "telefone", "type": "string" },
+    { "name": "celular", "type": "string" },
+    { "name": "cep", "type": "string" },
+    { "name": "logradouro", "type": "string" },
+    { "name": "numero", "type": "string" },
+    { "name": "complemento", "type": "string" },
+    { "name": "bairro", "type": "string" },
+    { "name": "cidade", "type": "string" },
+    { "name": "estado", "type": "string" },
+    { "name": "pais", "type": "string", "default": "Brasil" },
+    { "name": "ativo", "type": "boolean", "default": true },
+    { "name": "createdAt", "type": "datetime" },
+    { "name": "updatedAt", "type": "datetime" }
+  ]
+}

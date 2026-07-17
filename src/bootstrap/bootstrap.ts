@@ -1,4 +1,4 @@
-import { ApplicationContext } from '../core/application/application-context';
+﻿import { ApplicationContext } from '../core/application/application-context';
 import { GenerateCommand } from '../commands/generate.command';
 import { DoctorCommand } from '../commands/doctor.command';
 import { AnalyzeCommand } from '../commands/analyze.command';
@@ -10,6 +10,21 @@ import { AiCommand } from '../commands/ai.command';
 import { PrismaCommand } from '../commands/prisma.command';
 import { MakeCommand } from '../commands/make.command';
 import { GeneratorRegistry } from '../core/generator/generator.registry';
+import { RendererRegistry } from '../core/renderer';
+import { PrismaRenderer } from '../core/renderer/prisma.renderer';
+import { RepositoryRenderer } from '../core/renderer/repository.renderer';
+import { ServiceRenderer } from '../core/renderer/service.renderer';
+import { ControllerRenderer } from '../core/renderer/controller.renderer';
+import { ModuleRenderer } from '../core/renderer/module.renderer';
+import { EntityRenderer } from '../core/renderer/entity.renderer';
+import { SchemaRenderer } from '../core/renderer/schema.renderer';
+import { MigrationRenderer } from '../core/renderer/migration.renderer';
+import { AppModuleRenderer } from '../core/renderer/app-module.renderer';
+import { PrismaCrudRenderer } from '../core/renderer/prisma-crud.renderer';
+import { BusinessServiceRenderer } from '../core/renderer/business-service.renderer';
+import { QueryRenderer } from '../core/renderer/query.renderer';
+import { PrismaRepositoryRenderer } from '../core/renderer/prisma-repository.renderer';
+import { DtoRenderer } from '../core/renderer/dto.renderer';
 import { PrismaLoader } from '../core/prisma/prisma-loader';
 import { PrismaDmmf } from '../core/prisma/prisma-dmmf';
 import { PrismaEngine } from '../core/prisma/prisma-engine';
@@ -42,6 +57,8 @@ import { DtoGenerator } from '../generators/dto.generator';
 import { RepositoryGenerator } from '../generators/repository.generator';
 import { EntityGenerator } from '../generators/entity.generator';
 import { ResourceGenerator } from '../generators/resource.generator';
+import { ErpGenerator } from '../generators/erp.generator';
+import { ErpCommand } from '../commands/erp.command';
 import { UseCaseGenerator } from '../generators/usecase.generator';
 import { GatewayGenerator } from '../generators/gateway.generator';
 import { DecoratorGenerator } from '../generators/decorator.generator';
@@ -238,8 +255,30 @@ export class Bootstrap {
       templateMarketplaceService,
     );
     const prismaCommand = new PrismaCommand(crudGenerator);
+const rendererRegistry = new RendererRegistry();
+rendererRegistry.register(new PrismaRenderer());
+    rendererRegistry.register(new DtoRenderer());
+    rendererRegistry.register(new RepositoryRenderer());
+    rendererRegistry.register(new ServiceRenderer());
+    rendererRegistry.register(new ControllerRenderer());
+    rendererRegistry.register(new ModuleRenderer());
+    rendererRegistry.register(new EntityRenderer());
+    rendererRegistry.register(new SchemaRenderer());
+    rendererRegistry.register(new MigrationRenderer());
+    rendererRegistry.register(new AppModuleRenderer());
+    rendererRegistry.register(new PrismaCrudRenderer());
+    rendererRegistry.register(new BusinessServiceRenderer());
+    rendererRegistry.register(new QueryRenderer());
+    rendererRegistry.register(new PrismaRepositoryRenderer());
+rendererRegistry.register(new RepositoryRenderer());
+    const erpGenerator = new ErpGenerator(
+  generatorRegistry,
+  rendererRegistry,
+);
+    const erpCommand = new ErpCommand(erpGenerator, applicationContext);
 
-    applicationContext.register(GeneratorRegistry, generatorRegistry);
+applicationContext.register(GeneratorRegistry, generatorRegistry);
+applicationContext.register(RendererRegistry, rendererRegistry);
     applicationContext.register(PrismaLoader, prismaLoader);
     applicationContext.register(PrismaDmmf, prismaDmmf);
     applicationContext.register(PrismaEngine, prismaEngine);
@@ -255,6 +294,8 @@ export class Bootstrap {
     applicationContext.register(CrudOrchestratorService, crudOrchestrator);
     applicationContext.register(CrudGenerator, crudGenerator);
     applicationContext.register(PrismaCommand, prismaCommand);
+    applicationContext.register(ErpGenerator, erpGenerator);
+    applicationContext.register(ErpCommand, erpCommand);
     applicationContext.register(GenerateCommand, generateCommand);
     applicationContext.register(MakeCommand, makeCommand);
     applicationContext.register(DoctorAnalyzer, doctorAnalyzer);
@@ -341,3 +382,20 @@ export class Bootstrap {
     generatorRegistry.register(new TestGenerator());
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

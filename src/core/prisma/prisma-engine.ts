@@ -1,4 +1,4 @@
-import { PrismaDmmf } from './prisma-dmmf';
+﻿import { PrismaDmmf } from './prisma-dmmf';
 import { PrismaEnum } from './prisma-enum';
 import { PrismaField } from './prisma-field';
 import { PrismaLoader } from './prisma-loader';
@@ -21,6 +21,16 @@ export class PrismaEngine {
     dmmfGenerator: PrismaDmmf = new PrismaDmmf(),
   ) {
     this.dmmfGenerator = dmmfGenerator;
+  }
+
+  public isLoaded(): boolean {
+    return this.document !== undefined;
+  }
+
+  public async ensureLoaded(schemaPath?: string): Promise<void> {
+    if (!this.isLoaded()) {
+      await this.load(schemaPath);
+    }
   }
 
   public async load(schemaPath?: string): Promise<void> {

@@ -1,1 +1,29 @@
-export class {{serviceName}} { findAll() { return "{{serviceName}}"; } }
+﻿import { Injectable } from "@nestjs/common";
+import { {{repositoryName}} } from "./{{moduleName}}.repository";
+
+@Injectable()
+export class {{serviceName}} {
+  constructor(
+    private readonly repository: {{repositoryName}},
+  ) {}
+
+  findAll() {
+    return this.repository.findAll();
+  }
+
+  findOne(id: string) {
+    return this.repository.findById(id);
+  }
+
+  create(dto: {{dtoCreate}}) {
+    return this.repository.create(dto);
+  }
+
+  update(id: string, dto: {{dtoUpdate}}) {
+    return this.repository.update(id, dto);
+  }
+
+  remove(id: string) {
+    return this.repository.delete(id);
+  }
+}

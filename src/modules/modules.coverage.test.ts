@@ -1,4 +1,4 @@
-﻿import path from 'node:path';
+import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { glob } from 'glob';
 import { describe, expect, it, vi } from 'vitest';
@@ -44,18 +44,29 @@ function buildArgs(methodName: string, length: number): unknown[] {
 }
 
 describe('Modules coverage smoke', () => {
-  it('carrega exports e executa mÃ©todos simples dos mÃ³dulos', async () => {
+  it('carrega exports e executa métodos simples dos módulos', async () => {
     const modulesRoot = path.resolve(process.cwd(), 'src', 'modules');
     const files = await glob('**/*.ts', {
       cwd: modulesRoot,
       absolute: true,
-      ignore: ['**/*.test.ts','**/*.spec.ts','**/*.module.ts','**/tests/**'],
+      ignore: ['**/*.test.ts'],
     });
 
     expect(files.length).toBeGreaterThan(0);
 
     for (const filePath of files) {
-      console.log('IMPORTANDO:',filePath);let imported;try{imported=await import(pathToFileURL(filePath).href);}catch(e){console.error('ARQUIVO:',filePath);console.error(e);throw e;}
+      console.log('IMPORTANDO:', filePath);
+
+let imported;
+
+try {
+  imported = await import(pathToFileURL(filePath).href);
+  console.log('OK:', filePath);
+} catch (error) {
+  console.error('ERRO NO ARQUIVO:', filePath);
+  console.error(error);
+  throw error;
+}
 
       for (const exported of Object.values(imported)) {
         if (typeof exported !== 'function') {
@@ -111,6 +122,3 @@ describe('Modules coverage smoke', () => {
     }
   }, 60000);
 });
-
-
-

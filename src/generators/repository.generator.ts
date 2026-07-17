@@ -1,41 +1,43 @@
-import path from 'path';
-import { BaseGenerator } from './base.generator';
-import { IGenerator } from '../core/generator/igenerator';
-import { ProjectContext } from '../services/project-context.service';
+﻿import path from "node:path";
+import { BaseGenerator } from "./base.generator";
+import { IGenerator } from "../core/generator/igenerator";
 
 export class RepositoryGenerator extends BaseGenerator implements IGenerator {
   readonly metadata = {
-    type: 'repository',
-    description: 'Generate repository',
-    category: 'persistence',
-    version: '1.0.0',
-    aliases: ['repo'],
+    type: "repository",
+    description: "Generate Repository",
+    category: "database",
+    version: "2.0.0",
+    aliases: ["repository", "repo"],
   };
 
-  private readonly context = ProjectContext.getInstance();
-
-  protected resolveOutputPath(moduleName: string): string {
-    return path.resolve(
+  protected resolveOutputPath(name: string): string {
+    return path.join(
       process.cwd(),
-      'src',
-      'modules',
-      moduleName,
-      `${moduleName}.repository.ts`,
+      "src",
+      "modules",
+      name,
+      `${name}.repository.ts`,
     );
   }
 
   protected templateName(): string {
-    return 'repository';
+    return "repository";
   }
 
-  protected async templateData(
-    moduleName: string,
-  ): Promise<Record<string, unknown>> {
-    const context = await this.context;
+  protected templateData(name: string): Record<string, unknown> {
+    const className = this.toPascalCase(name);
 
     return {
-      repositoryName: `${this.toPascalCase(moduleName)}Repository`,
-      context,
+      name,
+      moduleName: name,
+      className,
+      entityName: className,
+      repositoryName: `${className}Repository`,
+      serviceName: `${className}Service`,
+      controllerName: `${className}Controller`,
+      dtoCreate: `Create${className}Dto`,
+      dtoUpdate: `Update${className}Dto`,
     };
   }
 }

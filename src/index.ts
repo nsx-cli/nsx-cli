@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-
+﻿
 import { createCli } from './cli';
 import { Bootstrap } from './bootstrap/bootstrap';
 import { GenerateCommand } from './commands/generate.command';
@@ -13,6 +12,7 @@ import { AiCommand } from './commands/ai.command';
 import { PluginCommand } from './commands/plugin.command';
 import { MarketplaceCommand } from './commands/marketplace.command';
 import { PrismaCommand } from './commands/prisma.command';
+import { ErpCommand } from './commands/erp.command';
 import { PluginManager } from './core/plugin/plugin-manager';
 
 async function bootstrapCli(): Promise<void> {
@@ -30,6 +30,7 @@ async function bootstrapCli(): Promise<void> {
   applicationContext.resolve(PluginCommand).register(program);
   applicationContext.resolve(MarketplaceCommand).register(program);
   applicationContext.resolve(PrismaCommand).register(program);
+  applicationContext.resolve(ErpCommand).register(program);
 
   const pluginManager = applicationContext.resolve(PluginManager);
   await pluginManager.initialize(program, applicationContext);
@@ -38,3 +39,4 @@ async function bootstrapCli(): Promise<void> {
 }
 
 void bootstrapCli();
+

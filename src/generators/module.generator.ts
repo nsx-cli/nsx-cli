@@ -1,34 +1,44 @@
-import path from 'path';
-import { BaseGenerator } from './base.generator';
-import { IGenerator } from '../core/generator/igenerator';
+﻿import path from "node:path";
+import { BaseGenerator } from "./base.generator";
+import { IGenerator } from "../core/generator/igenerator";
 
 export class ModuleGenerator extends BaseGenerator implements IGenerator {
   readonly metadata = {
-    type: 'module',
-    description: 'Generate module',
-    category: 'architecture',
-    version: '1.0.0',
-    aliases: ['mod'],
+    type: "module",
+    description: "Generate NestJS Module",
+    category: "nest",
+    version: "2.0.0",
+    aliases: ["module","mod"],
   };
 
-  protected resolveOutputPath(moduleName: string): string {
-    return path.resolve(
+  protected resolveOutputPath(name: string): string {
+    return path.join(
       process.cwd(),
-      'src',
-      'modules',
-      moduleName,
-      `${moduleName}.module.ts`,
+      "src",
+      "modules",
+      name,
+      `${name}.module.ts`,
     );
   }
 
   protected templateName(): string {
-    return 'module';
+    return "module";
   }
 
-  protected templateData(moduleName: string): Record<string, unknown> {
+  protected templateData(name: string): Record<string, unknown> {
+    const className = this.toPascalCase(name);
+
     return {
-      moduleName,
-      moduleClassName: this.toPascalCase(moduleName) + 'Module',
+      name,
+      moduleName: name,
+      className,
+      entityName: className,
+      moduleClass: `${className}Module`,
+      controllerName: `${className}Controller`,
+      serviceName: `${className}Service`,
+      repositoryName: `${className}Repository`,
+      dtoCreate: `Create${className}Dto`,
+      dtoUpdate: `Update${className}Dto`,
     };
   }
 }

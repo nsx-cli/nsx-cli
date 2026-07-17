@@ -1,4 +1,4 @@
-import { PrismaEngine } from '../prisma/prisma-engine';
+﻿import { PrismaEngine } from '../prisma/prisma-engine';
 import { PrismaModel } from '../prisma/prisma-model';
 import { CrudExecutionReport } from './crud-execution-report';
 import { CrudModelNotFoundException } from './exceptions/crud-model-not-found.exception';
@@ -14,7 +14,7 @@ export class CrudGenerator {
   ) {}
 
   public async generate(modelName: string): Promise<CrudExecutionReport> {
-    await this.prismaEngine.load();
+    await this.prismaEngine.ensureLoaded();
     const model = await this.getModel(modelName);
     return this.delegate(model);
   }
@@ -33,3 +33,4 @@ export class CrudGenerator {
     return this.crudOrchestrator.execute(model);
   }
 }
+

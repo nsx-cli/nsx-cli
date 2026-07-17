@@ -1,11 +1,93 @@
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsString,
+  IsBoolean,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+  IsDateString,
+} from "class-validator";
+
 export class CreateEmpresaDto {
 
-  razaoSocial!:string;
+  @ApiProperty({ required: true })
+  @IsString()
+  razaoSocial!: string;
 
-  cnpj!:string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  nomeFantasia?: string;
 
-  email?:string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  cnpj?: string;
 
-  telefone?:string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  inscricaoEstadual?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  telefone?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  celular?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  cep?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  logradouro?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  numero?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  complemento?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  bairro?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  cidade?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  estado?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  pais?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  ativo?: boolean;
 
 }

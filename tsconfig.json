@@ -1,28 +1,42 @@
-{
+﻿{
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
+    "moduleResolution": "Node",
+
     "rootDir": "src",
     "outDir": "dist",
 
     "strict": true,
 
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     "resolveJsonModule": true,
 
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "sourceMap": true,
+
+    "types": [
+      "node"
+    ]
   },
 
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
 
   "exclude": [
+    "dist",
+    "coverage",
+    "node_modules",
     "**/*.test.ts",
     "**/*.integration.test.ts",
     "**/*.coverage.test.ts",
-    "src/smoke/**",
-    "coverage",
-    "dist",
-    "node_modules"
+    "src/smoke/**"
   ]
 }
